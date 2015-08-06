@@ -14,18 +14,16 @@
   <script src="assets/moment.min.js"></script>
   <script src="assets/moment-timezone.min.js"></script>
 
+  <link href="assets/style.css" rel="stylesheet" type="text/css"/>
   <style>
     body {
       margin:0;
       padding:0;
-      font-family: jaf-bernina-sans-comp,'Helvetica Neue',Arial,Helvetica,Sans-Serif;
       font-weight: 400;
     }
     #header {
-      background-color: #bf3f38;
       width: 100%;
-      height: 30px;
-      color: white;
+      color: black;
     }
     #header div {
       padding: 6px;
@@ -33,18 +31,22 @@
     }
     #map {
       position: absolute;
-      top:30px;
+      top:36px;
       bottom:0;
       right:0;
       left:0;
+    }
+    .leaflet-control-container a {
+      background-image: none;
     }
   </style>
 </head>
 <body>
 
-<div id="header"><div>XOXO Shuttle Tracker</div></div>
+<div id="header"><div style="font-weight: bold; float: left;">XOXO</div><div style="float: right;">Shuttle Tracker</div></div>
 <div id="map"></div>
 
+<script type="text/javascript" src="/assets/pushstream.js"></script>
 <script type='text/javascript'>
   moment.tz.add('America/Los_Angeles|PST PDT|80 70|0101|1Lzm0 1zb0 Op0');
 
@@ -75,7 +77,7 @@
   var map = L.map('map').setView([45.51798525, -122.669760], 15);
   
   var bus = null;
-  var routeHistory = null;
+  var routeHistoryLine = null;
 
   L.esri.basemapLayer('Gray').addTo(map);
 
@@ -111,19 +113,21 @@
   });
 
   var today = new Date();
-  // today = new Date(2014,9,14,9,0,0);
+  //today = new Date(2015,9,13,9,0,0);
   
   var date = "";
-  // show yesterday if after midnight!
-  if(today.getDate() == 10) {
-    date = "11";
+  if(today.getDate() <= 9) {
+    // show the first day of xoxo if it's before the first day
+    date = "10";
   } else if(today.getHours() >= 0 && today.getHours() <= 4) {
+    // show yesterday if after midnight!
     date = ""+(today.getDate()-1);
   } else {
     date = ""+today.getDate();
   }
 
   for(var i in stops) {
+    // If "show_on" is set, then this stop will appear on the map *only* on these dates
     if("show_on" in stops[i].properties && stops[i].properties.show_on.indexOf(date) == -1) {
       continue;
     }
@@ -146,20 +150,39 @@
     marker.bindPopup('<b>'+stops[i].properties.Name+'</b><br>'+stops[i].properties.street+'<br>'+schedule);
   }
 
+  // Load the inital data
   get_request('location.php', function(data) {
-    // bus = L.marker([data.geometry.coordinates[1], data.geometry.coordinates[0]]).addTo(map);
     bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]]).addTo(map);
     bus.bindPopup(bus_popup(data.current.properties.date));
-    routeHistory = L.geoJson(data.history, {
-      style: {
-        "color": "#257eca",
-        "weight": 5,
-        "opacity": 0.65
-      }
+    routeHistoryLine = L.polyline(data.history, {
+      "color": "#257eca",
+      "weight": 5,
+      "opacity": 0.65
     }).addTo(map);
     map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
-    setTimeout(updateLocation, 2000);
   });
+
+  // Wait for streaming data
+  var pushstream = new PushStream({
+    host: window.location.hostname,
+    port: 80,
+    useSSL: false,
+    modes: "eventsource",
+    urlPrefixEventsource: "/streaming/sub",
+    channelsByArgument: true,
+    channelsArgument: "id"
+  });
+  pushstream.onmessage = function(data,id,channel) {
+    routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
+    bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+
+    if(!map.getBounds().contains(bus.getLatLng())) {
+      map.panTo(bus.getLatLng());
+    }
+  }
+  pushstream.addChannel('shuttle');
+  pushstream.connect();
+
 
   function updateLocation() {
     get_request('location.php', function(data) {
@@ -176,7 +199,6 @@
       setTimeout(updateLocation, 2000);
     });
   }
-
 
   function bus_popup(date_str) {
     var contents = '';

@@ -1,19 +1,11 @@
 <?php
-include('inc.php');
+include('lib/inc.php');
 
 header('Content-type: application/json');
 
 $current = $redis->get('xoxo-tracker-location');
 
-$history = array(
-  'type' => 'LineString',
-  'properties' => array(
-    'count' => 0,
-    'distance' => 0,
-  ),
-  'coordinates' => array(),
-  'bbox' => array()
-);
+$history = array();
 
 $loc = $redis->lrange('xoxo-history', 0, 1000);
 foreach($loc as $l) {
@@ -47,10 +39,10 @@ foreach($coordinates as $c) {
 // Simplify the line
 $newCoordinates = geo\ramerDouglasPeucker($newCoordinates, 0.0001);
 
-
-$history['coordinates'] = $newCoordinates;
-$history['properties']['distance'] = $lineDistance;
-$history['properties']['count'] = count($history['coordinates']);
+$history = array_map(function($item){
+  return array($item[1],$item[0]);
+}, $newCoordinates);
+$history = array_reverse($history);
 
 echo json_encode(array(
   'current' => json_decode($current),

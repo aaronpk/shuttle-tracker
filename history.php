@@ -1,5 +1,5 @@
 <?php
-include('inc.php');
+include('lib/inc.php');
 
 header('Content-type: application/json');
 

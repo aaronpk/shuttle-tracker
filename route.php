@@ -61,6 +61,12 @@
       margin-right: 4px;
       margin-left: -26px;
     }
+    #results textarea {
+      width:100%;
+      height:120px;
+      font-size: 10px;
+      font-family: "Courier New";
+    }
     .pad {
       padding: 6px;
     }
@@ -75,6 +81,7 @@
   <div id="route_summary"></div>
   <h3>Directions</h3>
   <ul></ul>
+  <textarea></textarea>
 </div></div>
 
 <div id="controls"><div class="pad">
@@ -103,6 +110,13 @@
   ?>
     <div class="form-group">
       <label><?= $stop->properties->Name ?></label>
+
+      <?php if(property_exists($stop->properties, 'TimeWindowStart')): ?>
+        <div style="">
+          <?= $stop->properties->TimeWindowStart ?> - <?= $stop->properties->TimeWindowEnd ?>
+        </div>
+      <?php endif; ?>
+
       <select class="form-control" id="stop_<?= $i ?>_approach">
         <option value="0" <?= $stop->properties->CurbApproach == 0 ? 'selected="selected"' : '' ?>>Either Side</option>
         <option value="3" <?= $stop->properties->CurbApproach == 3 ? 'selected="selected"' : '' ?>>Either Side No U-Turn</option>
@@ -114,6 +128,7 @@
         <input type="text" value="<?= $stop->properties->Attr_TravelTime?>" class="form-control input-sm" style="height: 20px; width: 40px; float: left; margin-right: 4px;">
         <span>Minutes</span>
       </div>
+
     </div>
   <?php
   endforeach;
@@ -132,7 +147,7 @@
   
   $("#controls").css("height", $(window).height());
   
-  var callback_url = 'http://pin13.net/xoxo/oauth.php';
+  var callback_url = 'http://xoxo.dev/oauth.php';
 
   var route_service = "https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World/solve";
 
@@ -143,17 +158,26 @@
   
   var route;
 
+  var bounds = new L.LatLngBounds();
+  var markers = {};
+
   for(var i in stops) {
-    L.marker(new L.LatLng(stops[i].geometry.coordinates[1], stops[i].geometry.coordinates[0]), {
+    var pos = new L.LatLng(stops[i].geometry.coordinates[1], stops[i].geometry.coordinates[0]);
+    var marker = L.marker(pos, {
       icon: L.icon({
-        iconUrl: 'images/'+stops[i].properties.icon+'.png',
+        iconUrl: 'images/'+stops[i].properties.icon+'@2x.png',
         iconRetinaUrl: 'images/'+stops[i].properties.icon+'@2x.png',
         iconSize: [24, 29],
         iconAnchor: [12, 29],
-        popupAnchor: [0, -10],
+        popupAnchor: [0, -10]
       })
-    }).addTo(map);
+    });
+    marker.addTo(map);
+    markers[stops[i].properties.Name] = marker;
+    bounds.extend(pos);
   }
+
+  map.fitBounds(bounds);
 
   var arcgis_stops = Terraformer.ArcGIS.convert({
     type: "FeatureCollection",
@@ -190,6 +214,7 @@
         preserveLastStop: true,
         ignoreInvalidLocations: false,
         useHierarchy: true,
+        useTimeWindows: true,
         restrictUTurns: ($("#chk_preventuturns").prop("checked") ? 'esriNFSBNoBacktrack' : 'esriNFSBAllowBacktrack'),
         token: access_token,
         f: 'json'
@@ -205,14 +230,23 @@
         }
 
         var directions = JSON.parse(response);
+
         console.log(directions);
         $("#route_summary").html(''+Math.round(directions.routes.features[0].attributes.Total_Miles)+' miles<br>'
           +Math.round(directions.routes.features[0].attributes.Total_TravelTime)+' minutes');
         
-        $("#results ul").empty();
-        for(var i in directions.directions[0].features) {
-          var step = directions.directions[0].features[i];
-          $("#results ul").append('<li><img src="http://servicesbeta.esri.com/demos/3.11/api/js/esri/dijit/images/Directions/maneuvers/'+step.attributes.maneuverType+'.png">'+step.attributes.text+'</li>');
+        for(var i in directions.stops.features) {
+          var f = directions.stops.features[i];
+          console.log(directions.stops.features[i]);
+          if(i < directions.stops.features.length-1) {
+            markers[f.attributes.Name].setIcon(L.icon({
+              iconUrl: 'images/pin' + f.attributes.Sequence + '@2x.png',
+              iconRetinaUrl: 'images/pin' + f.attributes.Sequence + '@2x.png',
+              iconSize: [24, 29],
+              iconAnchor: [12, 29],
+              popupAnchor: [0, -10]
+            }));
+          }
         }
         
         var feature = Terraformer.ArcGIS.parse(directions.routes.features[0]);
@@ -228,7 +262,13 @@
           }
         }).addTo(map);
         
-        
+        $("#results textarea").val(JSON.stringify(route.toGeoJSON()));
+        // $("#results ul").empty();
+        // for(var i in directions.directions[0].features) {
+        //   var step = directions.directions[0].features[i];
+        //   $("#results ul").append('<li><img src="http://servicesbeta.esri.com/demos/3.11/api/js/esri/dijit/images/Directions/maneuvers/'+step.attributes.maneuverType+'.png">'+step.attributes.text+'</li>');
+        // }
+
       });
       
     });

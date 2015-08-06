@@ -1,7 +1,8 @@
 <?php
 date_default_timezone_set('UTC');
 
-include('geo.php');
+include(dirname(__FILE__).'/geo.php');
+include(dirname(__FILE__).'/config.php');
 
 
 $redis = new Redis();
@@ -10,11 +11,11 @@ $redis->pconnect('127.0.0.1', 6379);
 
 class ErrorHandling {
 	
-    public static function handle_error($errno, $errstr, $errfile, $errline) {
-        if (!(error_reporting() & $errno)) {
-            // this error code is not included in error_reporting
-            return;
-        }
+  public static function handle_error($errno, $errstr, $errfile, $errline) {
+    if (!(error_reporting() & $errno)) {
+      // this error code is not included in error_reporting
+      return;
+    }
 
 		dieWithError(array(
 			'error' => $errstr,
@@ -22,13 +23,13 @@ class ErrorHandling {
 			'file' => $errfile,
 			'line' => $errline
 		));
-    }
+  }
     
 	public static function handle_exception($exception, $call_previous = true) {
 		dieWithError(array(
 			'error' => $exception->getMessage()
 		));
-    }
+  }
 }
 
 set_error_handler(array("ErrorHandling", "handle_error"));

@@ -1,5 +1,5 @@
 <?php
-include('inc.php');
+include('lib/inc.php');
 
 header('Content-type: application/json');
 
@@ -43,6 +43,13 @@ if(count($input->locations) > 0) {
 	$redis->publish('xoxo-tracker', json_encode($data));
 	$redis->set('xoxo-tracker-location', json_encode($data));
 	$redis->lpush('xoxo-history', json_encode($data));
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, Config::$baseURL.'/streaming/pub?id=shuttle');
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_exec($ch);
 }
 
 
