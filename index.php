@@ -96,7 +96,8 @@
   var bus = null;
   var me = null;
   var routeHistoryLine = null;
-  var autoPan = true;
+  var autoPanBus = true;
+  var autoPanMe = true;
 
   L.esri.basemapLayer('Gray').addTo(map);
 /*
@@ -178,6 +179,11 @@
     marker.bindPopup('<b>'+stops[i].properties.Name+'</b><br>'+stops[i].properties.street+'<br>'+schedule);
   }
 
+  map.on('movestart', function(){
+    autoPanBus = false;
+    autoPanMe = false;
+  });
+
   // Load the inital data
   get_request('location.php', function(data) {
     bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
@@ -206,7 +212,7 @@
     routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
     bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
 
-    if(autoPan && !map.getBounds().contains(bus.getLatLng())) {
+    if(autoPanBus && !map.getBounds().contains(bus.getLatLng())) {
       map.panTo(bus.getLatLng());
     }
   }
@@ -246,7 +252,7 @@
   function locateMe() {
     if(navigator.geolocation) {
       navigator.geolocation.watchPosition(function(position){
-        autoPan = false;
+        autoPanBus = false;
         if(me == null) {
           me = L.marker([position.coords.latitude, position.coords.longitude], {
             icon: meIcon
@@ -254,7 +260,9 @@
         } else {
           me.setLatLng([position.coords.latitude, position.coords.longitude]);
         }
-        map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+        if(autoPanMe) {
+          map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+        }
       });
     }
     return false;
