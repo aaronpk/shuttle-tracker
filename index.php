@@ -11,6 +11,8 @@
   <script src="/assets/moment.min.js"></script>
   <script src="/assets/moment-timezone.min.js"></script>
 
+  <link rel="apple-touch-icon" href="/images/shuttle-icon.png">
+
   <link href="/assets/style.css" rel="stylesheet" type="text/css"/>
   <style>
     body {
