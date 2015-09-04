@@ -61,6 +61,7 @@
     }
     #locate-me a {
       background: url(/images/locate-me@2x.png) no-repeat center center;
+      background-size: 40px;
       width: 40px;
       height: 40px;
       display: block;
