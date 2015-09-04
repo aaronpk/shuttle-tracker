@@ -98,7 +98,7 @@
     request.send();
   }
 
-  var map = L.map('map').setView([45.51798525, -122.669760], 15);
+  var map = L.map('map');
   
   var bus = null;
   var me = null;
@@ -165,13 +165,17 @@
     date = ""+today.getDate();
   }
 
+  var bounds = new L.LatLngBounds();
+
   for(var i in stops) {
     // If "show_on" is set, then this stop will appear on the map *only* on these dates
     if("show_on" in stops[i].properties && stops[i].properties.show_on.indexOf(date) == -1) {
       continue;
     }
   
-    var marker = L.marker(new L.LatLng(stops[i].geometry.coordinates[1], stops[i].geometry.coordinates[0]), {
+    var stopLocation = new L.LatLng(stops[i].geometry.coordinates[1], stops[i].geometry.coordinates[0]);
+
+    var marker = L.marker(stopLocation, {
       icon: L.icon({
         iconUrl: "/images/"+stops[i].properties.icon+".png",
         iconRetinaUrl: "/images/"+stops[i].properties.icon+"@2x.png",
@@ -187,7 +191,11 @@
     }
     marker.addTo(map);
     marker.bindPopup('<b>'+stops[i].properties.Name+'</b><br>'+stops[i].properties.street+'<br>'+schedule);
+
+    bounds.extend(stopLocation);
   }
+
+  map.fitBounds(bounds);
 
   map.on('movestart', function(){
     autoPanBus = false;
