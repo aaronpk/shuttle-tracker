@@ -47,10 +47,8 @@
       background-image: none;
     }
     #locate-me {
-      background: white;
       width: 40px;
       height: 40px;
-      border-radius: 20px;
       position: absolute;
       bottom: 30px;
       left: 30px;
