@@ -1,15 +1,17 @@
 <html>
 <head>
   <title>XOXO Shuttle Schedule</title>
+  <link href="assets/style.css" rel="stylesheet" type="text/css"/>
   <style type="text/css">
-    body {
-      background-color: #eaeaea;
-      background-image: url(/images/bkg.jpg);
-      font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;
+    ul li {
+      margin-bottom: 0;
     }
   </style>
 </head>
 <body>
+  
+<div style="padding:30px;">
+
 <?php
 $stops = json_decode(file_get_contents('stops.geojson'));
 
@@ -22,5 +24,8 @@ foreach($stops as $stop) {
   echo '</ul>';
 }
 ?>
+
+</div>
+  
 </body>
 </html>

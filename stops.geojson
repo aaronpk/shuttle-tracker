@@ -13,7 +13,7 @@
         "10": "Thu: 5pm - 2am",
         "11": "Fri: 9am - 2am",
         "12": "Sat: 9am - 2am",
-        "13": "Sun: 9am - 6pm"
+        "13": "Sun: 9am - 2am"
       }
     },
     "geometry": {
@@ -172,6 +172,31 @@
       "coordinates": [
         -122.65690863132475,
         45.52294660989203
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "Name": "Instrument",
+      "RouteName": "XOXO",
+      "Attr_TravelTime": 2,
+      "CurbApproach": 3,
+      "icon": "instrument",
+      "address": "419 NE 10th Ave, Portland, Oregon, 97232",
+      "street": "NE 10th & Flanders",
+      "schedule": {
+        "10": "Thu: No Pickups",
+        "11": "Fri: 4pm - 7pm",
+        "12": "Sat: No Pickups",
+        "13": "Sun: No Pickups"
+      }
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -122.655806,
+        45.526041
       ]
     }
   }
