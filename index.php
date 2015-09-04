@@ -4,17 +4,14 @@
   <title>XOXO Shuttle</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-  <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <link rel="stylesheet" href="/assets/leaflet.css" />
+  <script src="/assets/leaflet.js"></script>
+  <script src="/assets/esri-leaflet.js"></script>
 
-  <!-- Load Esri Leaflet from CDN -->
-  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
+  <script src="/assets/moment.min.js"></script>
+  <script src="/assets/moment-timezone.min.js"></script>
 
-  <script src="assets/moment.min.js"></script>
-  <script src="assets/moment-timezone.min.js"></script>
-
-  <link href="assets/style.css" rel="stylesheet" type="text/css"/>
+  <link href="/assets/style.css" rel="stylesheet" type="text/css"/>
   <style>
     body {
       margin:0;
@@ -39,11 +36,31 @@
     .leaflet-control-container a {
       background-image: none;
     }
+    #locate-me {
+      background: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      z-index: 100;
+    }
+    #locate-me.hidden {
+      display: none;
+    }
+    #locate-me a {
+      background: url(/images/locate-me@2x.png) no-repeat center center;
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
   </style>
 </head>
 <body>
 
 <div id="header"><div style="font-weight: bold; float: left;">XOXO</div><div style="float: right;">Shuttle Tracker</div></div>
+<div id="locate-me"><a href="javascript:locateMe();"></a></div>
 <div id="map"></div>
 
 <script type="text/javascript" src="/assets/pushstream.js"></script>
@@ -72,12 +89,12 @@
     request.send();
   }
 
-
-
   var map = L.map('map').setView([45.51798525, -122.669760], 15);
   
   var bus = null;
+  var me = null;
   var routeHistoryLine = null;
+  var autoPan = true;
 
   L.esri.basemapLayer('Gray').addTo(map);
 /*
@@ -106,11 +123,19 @@
   var icons = [];
   
   var busIcon = L.icon({
-    iconUrl: 'http://esri.github.io/esri-leaflet/img/bus-stop-south.png',
-    iconRetinaUrl: 'http://esri.github.io/esri-leaflet/img/bus-stop-south@2x.png',
+    iconUrl: '/images/bus.png',
+    iconRetinaUrl: '/images/bus@2x.png',
     iconSize: [27, 31],
     iconAnchor: [13.5, 31],
     popupAnchor: [0, -11]
+  });
+
+  var meIcon = L.icon({
+    iconUrl: '/images/me.gif',
+    iconRetinaUrl: '/images/me@2x.gif',
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, 8]
   });
 
   var today = new Date();
@@ -153,7 +178,9 @@
 
   // Load the inital data
   get_request('location.php', function(data) {
-    bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]]).addTo(map);
+    bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
+      icon: busIcon
+    }).addTo(map);
     bus.bindPopup(bus_popup(data.current.properties.date));
     routeHistoryLine = L.polyline(data.history, {
       "color": "#257eca",
@@ -177,14 +204,14 @@
     routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
     bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
 
-    if(!map.getBounds().contains(bus.getLatLng())) {
+    if(autoPan && !map.getBounds().contains(bus.getLatLng())) {
       map.panTo(bus.getLatLng());
     }
   }
   pushstream.addChannel('shuttle');
   pushstream.connect();
 
-
+  /*
   function updateLocation() {
     get_request('location.php', function(data) {
       bus.setLatLng([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]]);
@@ -200,6 +227,7 @@
       setTimeout(updateLocation, 2000);
     });
   }
+  */
 
   function bus_popup(date_str) {
     var contents = '';
@@ -209,6 +237,27 @@
     return contents;
   }
   
+  if(!navigator.geolocation) {
+    document.getElementById('locate-me').classList.add('hidden');
+  }
+
+  function locateMe() {
+    if(navigator.geolocation) {
+      navigator.geolocation.watchPosition(function(position){
+        autoPan = false;
+        if(me == null) {
+          me = L.marker([position.coords.latitude, position.coords.longitude], {
+            icon: meIcon
+          }).addTo(map);
+        } else {
+          me.setLatLng([position.coords.latitude, position.coords.longitude]);
+        }
+        map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+      });
+    }
+    return false;
+  }
+
 </script>
 
 </body>
