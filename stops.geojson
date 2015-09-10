@@ -10,7 +10,7 @@
       "address": "1300 SE Stark St, Portland, Oregon, 97214",
       "street": "SE 13th & Stark",
       "schedule": {
-        "10": "Thu: 5pm - 2am",
+        "10": "Thu: 6pm - 2am",
         "11": "Fri: 9am - 2am",
         "12": "Sat: 9am - 2am",
         "13": "Sun: 9am - 2am"
@@ -37,7 +37,7 @@
       "schedule": {
         "10": "Thu: No Pickups",
         "11": "Fri: 7pm - 2am",
-        "12": "Sat: 7pm - 2am",
+        "12": "Sat: 6pm - 2am",
         "13": "Sun: No Pickups"
       },
       "show_on": ["11","12"]
@@ -61,7 +61,7 @@
       "address": "1022 SW Stark St, Portland, Oregon, 97205",
       "street": "SW 10th & Stark",
       "schedule": {
-        "10": "Thu: 5pm - 2am",
+        "10": "Thu: 6pm - 2am",
         "11": "Fri: 9am - 2am",
         "12": "Sat: 9am - 2am",
         "13": "Sun: 9am - 2am"
@@ -86,7 +86,7 @@
       "address": "520 SW Broadway, Portland, OR 97205",
       "street": "SW Broadway & Alder",
       "schedule": {
-        "10": "Thu: 5pm - 2am",
+        "10": "Thu: 6pm - 2am",
         "11": "Fri: 9am - 2am",
         "12": "Sat: 9am - 2am",
         "13": "Sun: 9am - 2am"
@@ -111,7 +111,7 @@
       "address": "921 SW 6th Ave, Portland, OR 97204",
       "street": "SW Broadway & Taylor",
       "schedule": {
-        "10": "Thu: 5pm - 2am",
+        "10": "Thu: 6pm - 2am",
         "11": "Fri: 9am - 2am",
         "12": "Sat: 9am - 2am",
         "13": "Sun: 9am - 2am"
@@ -136,7 +136,7 @@
       "address": "319 SW Pine St, Portland, OR 97204",
       "street": "SW 3rd & Pine",
       "schedule": {
-        "10": "Thu: 5pm - 2am",
+        "10": "Thu: 6pm - 2am",
         "11": "Fri: 9am - 2am",
         "12": "Sat: 9am - 2am",
         "13": "Sun: 9am - 2am"
@@ -161,7 +161,7 @@
       "address": "800 E Burnside St, Portland, Oregon, 97214",
       "street": "SE 9th & Burnside",
       "schedule": {
-        "10": "Thu: 5pm - 2am",
+        "10": "Thu: 6pm - 2am",
         "11": "Fri: 9am - 2am",
         "12": "Sat: 9am - 2am",
         "13": "Sun: 9am - 2am"
@@ -190,7 +190,8 @@
         "11": "Fri: 4pm - 7pm",
         "12": "Sat: No Pickups",
         "13": "Sun: No Pickups"
-      }
+      },
+      "show_on": ["11"]
     },
     "geometry": {
       "type": "Point",

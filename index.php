@@ -36,6 +36,9 @@
       padding: 6px;
       padding-left: 12px;
     }
+    #header.offline {
+      background-color: #e7726c;
+    }
     #map {
       position: absolute;
       top:36px;
@@ -70,7 +73,11 @@
 </head>
 <body>
 
-<div id="header"><div style="font-weight: bold; float: left;">XOXO</div><div style="float: right;">Shuttle Tracker</div></div>
+<div id="header">
+  <div style="font-weight: bold; float: left;">XOXO</div>
+  <div style="float: right;" id="header-text">Shuttle Tracker</div>
+  <div style="clear: both;"></div>
+</div>
 <div id="locate-me"><a href="javascript:locateMe();"></a></div>
 <div id="map"></div>
 
@@ -187,61 +194,97 @@
         popupAnchor: [0, -29]
       })
     })
-    var schedule = '';
+    var stop_schedule = '';
     
     if(date in stops[i].properties.schedule) {
-      schedule = stops[i].properties.schedule[date];
+      stop_schedule = stops[i].properties.schedule[date];
     }
     marker.addTo(map);
-    marker.bindPopup('<b>'+stops[i].properties.Name+'</b><br>'+stops[i].properties.street+'<br>'+schedule);
+    marker.bindPopup('<b>'+stops[i].properties.Name+'</b><br>'+stops[i].properties.street+'<br>'+stop_schedule);
 
     bounds.extend(stopLocation);
   }
 
   map.fitBounds(bounds);
 
-  map.on('movestart', function(){
+  map.on('dragstart', function(){
     autoPanBus = false;
     autoPanMe = false;
   });
 
-  // Load the inital data
-  get_request('location.php', function(data) {
-    bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
-      icon: busIcon
-    }).addTo(map);
-    bus.bindPopup(bus_popup(data.current.properties.date));
-    routeHistoryLine = L.polyline(data.history, {
-      "color": "#257eca",
-      "weight": 5,
-      "opacity": 0.65
-    }).addTo(map);
-    map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
-  });
-
-  // Wait for streaming data
-  var pushstream = new PushStream({
-    host: window.location.hostname,
-    port: 80,
-    useSSL: false,
-    modes: "eventsource",
-    urlPrefixEventsource: "/streaming/sub",
-    channelsByArgument: true,
-    channelsArgument: "id"
-  });
-  pushstream.onmessage = function(data,id,channel) {
-    console.log(data);
-    
-    routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
-    bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
-    bus.bindPopup(bus_popup(data.properties.date));
-
-    if(autoPanBus && !map.getBounds().contains(bus.getLatLng())) {
-      map.panTo(bus.getLatLng());
+  // Show a warning when viewing the map outside the schedule times
+  var schedule = [
+    {
+      from: (new Date(2015,9,10,18,0,0)),
+      to: (new Date(2015,9,11,02,0,0))
+    },
+    {
+      from: (new Date(2015,9,11,09,0,0)),
+      to: (new Date(2015,9,12,02,0,0))
+    },
+    {
+      from: (new Date(2015,9,12,09,0,0)),
+      to: (new Date(2015,9,13,02,0,0))
+    },
+    {
+      from: (new Date(2015,9,13,09,0,0)),
+      to: (new Date(2015,9,14,02,0,0))
+    }
+  ];
+  var active = false;
+  for(var i in schedule) {
+    if(today >= schedule[i].from && today <= schedule[i].to) {
+      active = true;
     }
   }
-  pushstream.addChannel('shuttle');
-  pushstream.connect();
+
+  if(active) {
+    start_watching();
+  } else {
+    document.getElementById("header").classList.add("offline");
+    document.getElementById("header-text").innerText = "Shuttle is not in service";
+  }
+
+
+  function start_watching() {
+    // Load the inital data
+    get_request('location.php', function(data) {
+      bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
+        icon: busIcon
+      }).addTo(map);
+      bus.bindPopup(bus_popup(data.current.properties.date));
+      routeHistoryLine = L.polyline(data.history, {
+        "color": "#257eca",
+        "weight": 5,
+        "opacity": 0.65
+      }).addTo(map);
+      map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+    });
+
+    // Wait for streaming data
+    var pushstream = new PushStream({
+      host: window.location.hostname,
+      port: 80,
+      useSSL: false,
+      modes: "eventsource",
+      urlPrefixEventsource: "/streaming/sub",
+      channelsByArgument: true,
+      channelsArgument: "id"
+    });
+    pushstream.onmessage = function(data,id,channel) {
+      console.log(data);
+      
+      routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
+      bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+      bus.bindPopup(bus_popup(data.properties.date));
+
+      if(autoPanBus && !map.getBounds().contains(bus.getLatLng())) {
+        map.panTo(bus.getLatLng());
+      }
+    }
+    pushstream.addChannel('shuttle');
+    pushstream.connect();
+  }
 
   /*
   function updateLocation() {
