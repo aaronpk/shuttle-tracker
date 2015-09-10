@@ -47,8 +47,10 @@
       background-image: none;
     }
     #locate-me {
+      background: white;
       width: 40px;
       height: 40px;
+      border-radius: 20px;
       position: absolute;
       bottom: 30px;
       left: 30px;
@@ -137,9 +139,9 @@
   var busIcon = L.icon({
     iconUrl: '/images/bus.png',
     iconRetinaUrl: '/images/bus@2x.png',
-    iconSize: [27, 31],
-    iconAnchor: [13.5, 31],
-    popupAnchor: [0, -11]
+    iconSize: [24, 29],
+    iconAnchor: [12, 29],
+    popupAnchor: [0, -29]
   });
 
   var meIcon = L.icon({
@@ -152,6 +154,8 @@
 
   var today = new Date();
   //today = new Date(2015,9,13,9,0,0);
+  
+  var uniqid = today.toISOString()+today.getMilliseconds();
   
   var date = "";
   if(today.getDate() <= 9) {
@@ -226,8 +230,11 @@
     channelsArgument: "id"
   });
   pushstream.onmessage = function(data,id,channel) {
+    console.log(data);
+    
     routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
     bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+    bus.bindPopup(bus_popup(data.properties.date));
 
     if(autoPanBus && !map.getBounds().contains(bus.getLatLng())) {
       map.panTo(bus.getLatLng());
@@ -280,6 +287,9 @@
         if(autoPanMe) {
           map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
         }
+        get_request('me.php?uniq='+uniqid+'&lat='+position.coords.latitude+'&lng='+position.coords.longitude, function(data){
+          console.log(data);
+        });
       });
     }
     return false;
