@@ -178,7 +178,7 @@
   {
     "type": "Feature",
     "properties": {
-      "Name": "Instrument",
+      "Name": "Outpost",
       "RouteName": "XOXO",
       "Attr_TravelTime": 2,
       "CurbApproach": 3,

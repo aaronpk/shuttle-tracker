@@ -30,6 +30,7 @@ if(count($input->locations) > 0) {
 			'coordinates' => array((double)$loc->longitude, (double)$loc->latitude)
 		),
 		'properties' => array(
+			'shuttle' => (int)$loc->shuttle,
 			'date' => date('Y-m-d\TH:i:s\Z', $loc->timestamp),
 			'accuracy' => (int)$loc->horizontal_accuracy,
 			'speed' => (int)$loc->speed,
