@@ -23,6 +23,8 @@ if(!is_array($input->locations)) {
 if(count($input->locations) > 0) {
   $loc = $input->locations[count($input->locations)-1];
 
+  $shuttle = (int)$loc->shuttle;
+
 	$data = array(
 		'type' => 'Feature',
 		'geometry' => array(
@@ -41,9 +43,9 @@ if(count($input->locations) > 0) {
 			'stationary' => (in_array('stationary', $loc->motion) ? 1 : 0),
 		)
 	);
-	$redis->publish('xoxo-tracker', json_encode($data));
-	$redis->set('xoxo-tracker-location', json_encode($data));
-	$redis->lpush('xoxo-history', json_encode($data));
+	$redis->publish('xoxo-tracker-'.$shuttle, json_encode($data));
+	$redis->set('xoxo-tracker-location-'.$shuttle, json_encode($data));
+	$redis->lpush('xoxo-history-'.$shuttle, json_encode($data));
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, Config::$baseURL.'/streaming/pub?id=shuttle');

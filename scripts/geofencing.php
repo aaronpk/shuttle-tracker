@@ -1,16 +1,19 @@
 <?php
+chdir('..');
 include('lib/inc.php');
 
 $stops = json_decode(file_get_contents('stops.geojson'));
 
+$shuttle = $argv[1];
+
 foreach($stops as $stop) {
-  if(get_stop_state($redis, $stop->properties->Name) === false) {
+  if(get_stop_state($redis, $shuttle, $stop->properties->Name) === false) {
     echo "Setting default state\n";
-    set_stop_state($redis, $stop->properties->Name, 'outside');
+    set_stop_state($redis, $shuttle, $stop->properties->Name, 'outside');
   }
 }
 
-$redis->subscribe(['xoxo-tracker'], function($r, $channel, $data) use($stops) {
+$redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use($stops, $shuttle) {
   $redis2 = new Redis();
   $redis2->connect('127.0.0.1', 6379);
 
@@ -22,32 +25,32 @@ $redis->subscribe(['xoxo-tracker'], function($r, $channel, $data) use($stops) {
       $data->geometry->coordinates[1], $data->geometry->coordinates[0]) <= 20) {
       // Shuttle is inside this stop right now
       // If the shuttle was previously outside this stop, trigger a notification
-      if(($state=get_stop_state($redis2, $stop->properties->Name)) == 'outside') {
+      if(($state=get_stop_state($redis2, $shuttle, $stop->properties->Name)) == 'outside') {
         // The shuttle arrived
-        post_to_slack('The shuttle arrived at ' . $stop->properties->Name);
+        post_to_slack('Shuttle #'.$shuttle.' arrived at ' . $stop->properties->Name);
       }
       if($state != 'inside')
-        set_stop_state($redis2, $stop->properties->Name, 'inside');
+        set_stop_state($redis2, $shuttle, $stop->properties->Name, 'inside');
     } else {
       // echo "outside " . $stop->properties->Name . " " . $state[$stop->properties->Name] . "\n";
       // Shuttle is not inside this stop anymore
-      if(($state=get_stop_state($redis2, $stop->properties->Name)) == 'inside') {
+      if(($state=get_stop_state($redis2, $shuttle, $stop->properties->Name)) == 'inside') {
         // The shuttle departed
-        post_to_slack('The shuttle departed ' . $stop->properties->Name);
+        post_to_slack('Shuttle #'.$shuttle.' departed ' . $stop->properties->Name);
       }
       if($state != 'outside')
-        set_stop_state($redis2, $stop->properties->Name, 'outside');
+        set_stop_state($redis2, $shuttle, $stop->properties->Name, 'outside');
     }
   }
 
 });
 
-function get_stop_state(&$r, $stop) {
-  return $r->get('xoxo-shuttle-state::'.$stop);
+function get_stop_state(&$r, $shuttle, $stop) {
+  return $r->get('xoxo-shuttle-state::'.$shuttle.'::'.$stop);
 }
 
-function set_stop_state(&$r, $stop, $state) {
-  return $r->set('xoxo-shuttle-state::'.$stop, $state);
+function set_stop_state(&$r, $shuttle, $stop, $state) {
+  return $r->set('xoxo-shuttle-state::'.$shuttle.'::'.$stop, $state);
 }
 
 function post_to_slack($msg) {

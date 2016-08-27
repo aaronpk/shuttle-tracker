@@ -108,9 +108,9 @@
 
   var map = L.map('map');
   
-  var bus = null;
+  var bus = [];
+  var routeHistoryLine = [];
   var me = null;
-  var routeHistoryLine = null;
   var autoPanBus = true;
   var autoPanMe = true;
 
@@ -248,24 +248,28 @@
 
   function start_watching() {
     // Load the inital data
-    get_request('location.php', function(data) {
-      bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
-        icon: busIcon
-      }).addTo(map);
-      bus.bindPopup(bus_popup(data.current.properties.date));
-      routeHistoryLine = L.polyline(data.history, {
-        "color": "#257eca",
-        "weight": 5,
-        "opacity": 0.65
-      }).addTo(map);
-      map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+    get_request('location.php', function(shuttles) {
+      for(var i=0; i<shuttles.shuttles.length; i++) {
+        data = shuttles.shuttles[i];
+
+        bus[data.current.properties.shuttle] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
+          icon: busIcon
+        }).addTo(map);
+        bus[data.current.properties.shuttle].bindPopup(bus_popup(data.current.properties.date));
+        routeHistoryLine[data.current.properties.shuttle] = L.polyline(data.history, {
+          "color": "#257eca",
+          "weight": 5,
+          "opacity": 0.65
+        }).addTo(map);
+        map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+      }
     });
 
     // Wait for streaming data
     var pushstream = new PushStream({
       host: window.location.hostname,
-      port: 80,
-      useSSL: false,
+      port: 443,
+      useSSL: true,
       modes: "eventsource",
       urlPrefixEventsource: "/streaming/sub",
       channelsByArgument: true,
@@ -274,12 +278,12 @@
     pushstream.onmessage = function(data,id,channel) {
       console.log(data);
       
-      routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
-      bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
-      bus.bindPopup(bus_popup(data.properties.date));
+      routeHistoryLine[data.properties.shuttle].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
+      bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+      bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date));
 
       if(autoPanBus && !map.getBounds().contains(bus.getLatLng())) {
-        map.panTo(bus.getLatLng());
+        map.panTo(bus[data.properties.shuttle].getLatLng());
       }
     }
     pushstream.addChannel('shuttle');
