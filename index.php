@@ -160,14 +160,14 @@
   });
 
   var today = new Date();
-  //today = new Date(2015,9,13,9,0,0);
+  // today = new Date(2016,9,9,9,0,0);
   
   var uniqid = today.toISOString()+today.getMilliseconds();
   
   var date = "";
-  if(today.getDate() <= 9) {
+  if(today.getDate() <= 7) {
     // show the first day of xoxo if it's before the first day
-    date = "10";
+    date = "8";
   } else if(today.getHours() >= 0 && today.getHours() <= 4) {
     // show yesterday if after midnight!
     date = ""+(today.getDate()-1);
@@ -215,20 +215,20 @@
   // Show a warning when viewing the map outside the schedule times
   var schedule = [
     {
-      from: (new Date(2015,9,10,18,0,0)),
-      to: (new Date(2015,9,11,02,0,0))
+      from: (new Date(2016,8,8,18,0,0)),
+      to: (new Date(2016,8,9,2,0,0))
     },
     {
-      from: (new Date(2015,9,11,09,0,0)),
-      to: (new Date(2015,9,12,02,0,0))
+      from: (new Date(2016,8,9,9,0,0)),
+      to: (new Date(2016,8,10,2,0,0))
     },
     {
-      from: (new Date(2015,9,12,09,0,0)),
-      to: (new Date(2015,9,13,02,0,0))
+      from: (new Date(2016,8,10,9,0,0)),
+      to: (new Date(2016,8,11,2,0,0))
     },
     {
-      from: (new Date(2015,9,13,09,0,0)),
-      to: (new Date(2015,9,14,02,0,0))
+      from: (new Date(2016,8,11,9,0,0)),
+      to: (new Date(2016,8,12,2,0,0))
     }
   ];
   var active = false;

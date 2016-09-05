@@ -5,7 +5,7 @@ header('Content-type: application/json');
 
 $shuttles = [];
 
-for($i=1; $i<=2; $i++) {
+for($i=1; $i<=1; $i++) {
 
   $current = $redis->get('xoxo-tracker-location-'.$i);
 
