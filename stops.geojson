@@ -2,82 +2,6 @@
   {
     "type": "Feature",
     "properties": {
-      "Name": "Revolution Hall",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "xoxo",
-      "address": "1300 SE Stark St, Portland, Oregon, 97214",
-      "street": "SE 13th & Stark",
-      "schedule": {
-        "10": "Thu: 6pm - 2am",
-        "11": "Fri: 9am - 2am",
-        "12": "Sat: 9am - 2am",
-        "13": "Sun: 9am - 2am"
-      }
-    },
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.652624,
-        45.519289
-      ]
-    }
-  },
-  {
-    "type": "Feature",
-    "properties": {
-      "Name": "Yale Union / Holocene",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "holocene",
-      "address": "1001 SE Morrison St, Portland, Oregon, 97214",
-      "street": "SE 10th & Morrison",
-      "schedule": {
-        "10": "Thu: No Pickups",
-        "11": "Fri: 7pm - 2am",
-        "12": "Sat: 6pm - 2am",
-        "13": "Sun: No Pickups"
-      },
-      "show_on": ["11","12"]
-    },
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.65550315380096,
-        45.51725228872825
-      ]
-    }
-  },
-  {
-    "type": "Feature",
-    "properties": {
-      "Name": "Ace Hotel",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "acehotel",
-      "address": "1022 SW Stark St, Portland, Oregon, 97205",
-      "street": "SW 10th & Stark",
-      "schedule": {
-        "10": "Thu: 6pm - 2am",
-        "11": "Fri: 9am - 2am",
-        "12": "Sat: 9am - 2am",
-        "13": "Sun: 9am - 2am"
-      }
-    },
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.6814615726471,
-        45.522131023013806
-      ]
-    }
-  },
-  {
-    "type": "Feature",
-    "properties": {
       "Name": "Mariott Downtown",
       "RouteName": "XOXO",
       "Attr_TravelTime": 2,
@@ -86,10 +10,10 @@
       "address": "520 SW Broadway, Portland, OR 97205",
       "street": "SW Broadway & Alder",
       "schedule": {
-        "10": "Thu: 6pm - 2am",
-        "11": "Fri: 9am - 2am",
-        "12": "Sat: 9am - 2am",
-        "13": "Sun: 9am - 2am"
+        "8": "Thu: 6pm - 2am",
+        "9": "Fri: 9am - 2am",
+        "10": "Sat: 9am - 2am",
+        "11": "Sun: 9am - 2am"
       }
     },
     "geometry": {
@@ -111,10 +35,10 @@
       "address": "921 SW 6th Ave, Portland, OR 97204",
       "street": "SW Broadway & Taylor",
       "schedule": {
-        "10": "Thu: 6pm - 2am",
-        "11": "Fri: 9am - 2am",
-        "12": "Sat: 9am - 2am",
-        "13": "Sun: 9am - 2am"
+        "8": "Thu: 6pm - 2am",
+        "9": "Fri: 9am - 2am",
+        "10": "Sat: 9am - 2am",
+        "11": "Sun: 9am - 2am"
       }
     },
     "geometry": {
@@ -122,6 +46,31 @@
       "coordinates": [
         -122.68051743507387,
         45.51769958629577
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "Name": "Ace Hotel",
+      "RouteName": "XOXO",
+      "Attr_TravelTime": 2,
+      "CurbApproach": 3,
+      "icon": "acehotel",
+      "address": "1022 SW Stark St, Portland, Oregon, 97205",
+      "street": "SW 10th & Stark",
+      "schedule": {
+        "8": "Thu: 6pm - 2am",
+        "9": "Fri: 9am - 2am",
+        "10": "Sat: 9am - 2am",
+        "11": "Sun: 9am - 2am"
+      }
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -122.6814615726471,
+        45.522131023013806
       ]
     }
   },
@@ -136,10 +85,10 @@
       "address": "319 SW Pine St, Portland, OR 97204",
       "street": "SW 3rd & Pine",
       "schedule": {
-        "10": "Thu: 6pm - 2am",
-        "11": "Fri: 9am - 2am",
-        "12": "Sat: 9am - 2am",
-        "13": "Sun: 9am - 2am"
+        "8": "Thu: 6pm - 2am",
+        "9": "Fri: 9am - 2am",
+        "10": "Sat: 9am - 2am",
+        "11": "Sun: 9am - 2am"
       }
     },
     "geometry": {
@@ -161,10 +110,10 @@
       "address": "800 E Burnside St, Portland, Oregon, 97214",
       "street": "SE 9th & Burnside",
       "schedule": {
-        "10": "Thu: 6pm - 2am",
-        "11": "Fri: 9am - 2am",
-        "12": "Sat: 9am - 2am",
-        "13": "Sun: 9am - 2am"
+        "8": "Thu: 6pm - 2am",
+        "9": "Fri: 9am - 2am",
+        "10": "Sat: 9am - 2am",
+        "11": "Sun: 9am - 2am"
       }
     },
     "geometry": {
@@ -178,18 +127,69 @@
   {
     "type": "Feature",
     "properties": {
-      "Name": "Instrument",
+      "Name": "Revolution Hall",
       "RouteName": "XOXO",
       "Attr_TravelTime": 2,
       "CurbApproach": 3,
-      "icon": "instrument",
+      "icon": "xoxo",
+      "address": "1300 SE Stark St, Portland, Oregon, 97214",
+      "street": "SE 13th & Stark",
+      "schedule": {
+        "8": "Thu: 6pm - 2am",
+        "9": "Fri: 9am - 2am",
+        "10": "Sat: 9am - 2am",
+        "11": "Sun: 9am - 6pm"
+      }
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -122.652624,
+        45.519289
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "Name": "Yale Union / Holocene",
+      "RouteName": "XOXO",
+      "Attr_TravelTime": 2,
+      "CurbApproach": 3,
+      "icon": "holocene",
+      "address": "1001 SE Morrison St, Portland, Oregon, 97214",
+      "street": "SE 10th & Morrison",
+      "schedule": {
+        "8": "Thu: No Pickups",
+        "9": "Fri: 6pm - 2am",
+        "10": "Sat: 6pm - 2am",
+        "11": "Sun: No Pickups"
+      },
+      "show_on": ["9","10"]
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -122.65550315380096,
+        45.51725228872825
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "Name": "Outpost",
+      "RouteName": "XOXO",
+      "Attr_TravelTime": 2,
+      "CurbApproach": 3,
+      "icon": "xoxo",
       "address": "419 NE 10th Ave, Portland, Oregon, 97232",
       "street": "NE 10th & Flanders",
       "schedule": {
-        "10": "Thu: No Pickups",
-        "11": "Fri: 4pm - 7pm",
-        "12": "Sat: No Pickups",
-        "13": "Sun: No Pickups"
+        "8": "Thu: No Pickups",
+        "9": "Fri: No Pickups",
+        "10": "Sat: No Pickups",
+        "11": "Sun: 6pm - 2am"
       },
       "show_on": ["11"]
     },

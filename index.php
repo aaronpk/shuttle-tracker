@@ -108,9 +108,9 @@
 
   var map = L.map('map');
   
-  var bus = null;
+  var bus = [];
+  var routeHistoryLine = [];
   var me = null;
-  var routeHistoryLine = null;
   var autoPanBus = true;
   var autoPanMe = true;
 
@@ -160,14 +160,14 @@
   });
 
   var today = new Date();
-  //today = new Date(2015,9,13,9,0,0);
+  // today = new Date(2016,9,9,9,0,0);
   
   var uniqid = today.toISOString()+today.getMilliseconds();
   
   var date = "";
-  if(today.getDate() <= 9) {
+  if(today.getDate() <= 7) {
     // show the first day of xoxo if it's before the first day
-    date = "10";
+    date = "8";
   } else if(today.getHours() >= 0 && today.getHours() <= 4) {
     // show yesterday if after midnight!
     date = ""+(today.getDate()-1);
@@ -215,20 +215,20 @@
   // Show a warning when viewing the map outside the schedule times
   var schedule = [
     {
-      from: (new Date(2015,9,10,18,0,0)),
-      to: (new Date(2015,9,11,02,0,0))
+      from: (new Date(2016,8,8,18,0,0)),
+      to: (new Date(2016,8,9,2,0,0))
     },
     {
-      from: (new Date(2015,9,11,09,0,0)),
-      to: (new Date(2015,9,12,02,0,0))
+      from: (new Date(2016,8,9,9,0,0)),
+      to: (new Date(2016,8,10,2,0,0))
     },
     {
-      from: (new Date(2015,9,12,09,0,0)),
-      to: (new Date(2015,9,13,02,0,0))
+      from: (new Date(2016,8,10,9,0,0)),
+      to: (new Date(2016,8,11,2,0,0))
     },
     {
-      from: (new Date(2015,9,13,09,0,0)),
-      to: (new Date(2015,9,14,02,0,0))
+      from: (new Date(2016,8,11,9,0,0)),
+      to: (new Date(2016,8,12,2,0,0))
     }
   ];
   var active = false;
@@ -248,24 +248,28 @@
 
   function start_watching() {
     // Load the inital data
-    get_request('location.php', function(data) {
-      bus = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
-        icon: busIcon
-      }).addTo(map);
-      bus.bindPopup(bus_popup(data.current.properties.date));
-      routeHistoryLine = L.polyline(data.history, {
-        "color": "#257eca",
-        "weight": 5,
-        "opacity": 0.65
-      }).addTo(map);
-      map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+    get_request('location.php', function(shuttles) {
+      for(var i=0; i<shuttles.shuttles.length; i++) {
+        data = shuttles.shuttles[i];
+
+        bus[data.current.properties.shuttle] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
+          icon: busIcon
+        }).addTo(map);
+        bus[data.current.properties.shuttle].bindPopup(bus_popup(data.current.properties.date));
+        routeHistoryLine[data.current.properties.shuttle] = L.polyline(data.history, {
+          "color": "#257eca",
+          "weight": 5,
+          "opacity": 0.65
+        }).addTo(map);
+        map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+      }
     });
 
     // Wait for streaming data
     var pushstream = new PushStream({
       host: window.location.hostname,
-      port: 80,
-      useSSL: false,
+      port: 443,
+      useSSL: true,
       modes: "eventsource",
       urlPrefixEventsource: "/streaming/sub",
       channelsByArgument: true,
@@ -274,12 +278,12 @@
     pushstream.onmessage = function(data,id,channel) {
       console.log(data);
       
-      routeHistoryLine.addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
-      bus.setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
-      bus.bindPopup(bus_popup(data.properties.date));
+      routeHistoryLine[data.properties.shuttle].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
+      bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+      bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date));
 
       if(autoPanBus && !map.getBounds().contains(bus.getLatLng())) {
-        map.panTo(bus.getLatLng());
+        map.panTo(bus[data.properties.shuttle].getLatLng());
       }
     }
     pushstream.addChannel('shuttle');
