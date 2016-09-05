@@ -32,8 +32,10 @@ class ErrorHandling {
   }
 }
 
-set_error_handler(array("ErrorHandling", "handle_error"));
-set_exception_handler(array("ErrorHandling", "handle_exception"));
+if(!array_key_exists('SHELL',$_SERVER)) {
+  set_error_handler(array("ErrorHandling", "handle_error"));
+  set_exception_handler(array("ErrorHandling", "handle_exception"));
+}
 
 function dieWithError($err) {
 	die(json_encode($err));	
