@@ -15,6 +15,6 @@ $data = array(
   )
 );
 
-$redis->lpush('xoxo-visitors', json_encode($data));
+$redis->lpush('xoxo-visitors-2016', json_encode($data));
 
 echo "{}";
