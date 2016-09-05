@@ -7,7 +7,8 @@ echo "Starting...\n";
 $stops = json_decode(file_get_contents('stops.geojson'));
 $bridges = [
   ['name'=>'burnside','coordinates'=>[-122.66786813735963,45.522871441089144]],
-  ['name'=>'morrison','coordinates'=>[-122.66934871673583,45.51801532361445]]
+  ['name'=>'morrison','coordinates'=>[-122.66934871673583,45.51801532361445]],
+  ['name'=>'hawthorne','coordinates'=>[-122.670648, 45.513140]],
 ];
 
 
@@ -20,13 +21,13 @@ foreach($stops as $stop) {
   }
 }
 foreach($bridges as $bridge) {
-  if(get_stop_state($redis, $bridge['name']) === false) {
+  if(get_stop_state($redis, $shuttle, $bridge['name']) === false) {
     echo "Setting default state for ".$bridge['name']."\n";
-    set_stop_state($redis, $bridge['name'], 'outside');
+    set_stop_state($redis, $shuttle, $bridge['name'], 'outside');
   }
 }
 
-$redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use($stops, $shuttle) {
+$redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use($stops, $shuttle, $bridges) {
   $redis2 = new Redis();
   $redis2->connect('127.0.0.1', 6379);
 
@@ -40,7 +41,8 @@ $redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use(
       // If the shuttle was previously outside this stop, trigger a notification
       if(($state=get_stop_state($redis2, $shuttle, $stop->properties->Name)) == 'outside') {
         // The shuttle arrived
-        post_to_slack('Shuttle #'.$shuttle.' arrived at ' . $stop->properties->Name);
+        post_to_slack('Shuttle arrived at ' . $stop->properties->Name);
+        set_current_stop_status($redis2, $shuttle, $stop->properties->Name, 'arrived');
       }
       if($state != 'inside')
         set_stop_state($redis2, $shuttle, $stop->properties->Name, 'inside');
@@ -49,7 +51,8 @@ $redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use(
       // Shuttle is not inside this stop anymore
       if(($state=get_stop_state($redis2, $shuttle, $stop->properties->Name)) == 'inside') {
         // The shuttle departed
-        post_to_slack('Shuttle #'.$shuttle.' departed ' . $stop->properties->Name);
+        post_to_slack('Shuttle departed ' . $stop->properties->Name);
+        set_current_stop_status($redis2, $shuttle, $stop->properties->Name, 'departed');
       }
       if($state != 'outside')
         set_stop_state($redis2, $shuttle, $stop->properties->Name, 'outside');
@@ -60,15 +63,15 @@ $redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use(
     if(geo\gcDistance($bridge['coordinates'][1], $bridge['coordinates'][0],
       $data->geometry->coordinates[1], $data->geometry->coordinates[0]) <= 200) {
       // Shuttle is on this bridge
-      if(($state=get_stop_state($redis2, $bridge['name'])) == 'outside') {
-        post_to_slack('The shuttle is crossing the ' . ucfirst($bridge['name']) . ' bridge');
+      if(($state=get_stop_state($redis2, $shuttle, $bridge['name'])) == 'outside') {
+        post_to_slack('Shuttle is crossing the ' . ucfirst($bridge['name']) . ' bridge');
       }
       if($state != 'inside')
-        set_stop_state($redis2, $bridge['name'], 'inside');
+        set_stop_state($redis2, $shuttle, $bridge['name'], 'inside');
     } else {
-      $state = get_stop_state($redis2, $bridge['name']);
+      $state = get_stop_state($redis2, $shuttle, $bridge['name']);
       if($state != 'outside')
-        set_stop_state($redis2, $bridge['name'], 'outside');
+        set_stop_state($redis2, $shuttle, $bridge['name'], 'outside');
     }
   }
 
@@ -81,6 +84,23 @@ function get_stop_state(&$r, $shuttle, $stop) {
 
 function set_stop_state(&$r, $shuttle, $stop, $state) {
   return $r->set('xoxo-shuttle-state::'.$shuttle.'::'.$stop, $state);
+}
+
+function set_current_stop_status(&$r, $shuttle, $stop, $status) {
+  $data = [
+    'shuttle' => $shuttle,
+    'stop' => $stop,
+    'status' => $status
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, Config::$baseURL.'/streaming/pub?id=stop');
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_exec($ch);
+
+  return $r->set('xoxo-shuttle-current::'.$shuttle, json_encode($data));
 }
 
 function post_to_slack($msg) {

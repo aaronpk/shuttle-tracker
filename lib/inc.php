@@ -45,3 +45,40 @@ function respondWithError($err) {
 	die(json_encode($err));	
 }
 
+function getDistanceToStops($lat, $lng) {
+  $stops = json_decode(file_get_contents(dirname(__FILE__).'/../stops.geojson'), true);
+
+  $locations = [
+    $lat.','.$lng
+  ];
+
+  foreach($stops as $stop) {
+    $locations[] = $stop['geometry']['coordinates'][1].','.$stop['geometry']['coordinates'][0];
+  }
+
+  $ch = curl_init('https://www.mapquestapi.com/directions/v2/routematrix?key='.Config::$mapquestKey);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+    'locations' => $locations,
+    'options' => [
+      "unit" => "m",
+      "routeType" => "pedestrian",
+      "doReverseGeocode" => false,
+      "allToAll" => false
+    ]
+  ]));
+  $data = json_decode(curl_exec($ch), true);
+
+  $response = [];
+  foreach($stops as $i=>$stop) {
+    $response[] = [
+      'name' => $stop['properties']['Name'],
+      'stop' => md5($stop['properties']['Name']),
+      'distance' => $data['distance'][$i+1],
+      'seconds' => $data['time'][$i+1],
+    ];
+  }
+  return $response;
+}
+

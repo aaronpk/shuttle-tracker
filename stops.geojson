@@ -152,11 +152,11 @@
   {
     "type": "Feature",
     "properties": {
-      "Name": "Yale Union / Holocene",
+      "Name": "Yale Union",
       "RouteName": "XOXO",
       "Attr_TravelTime": 2,
       "CurbApproach": 3,
-      "icon": "holocene",
+      "icon": "yaleunion",
       "address": "1001 SE Morrison St, Portland, Oregon, 97214",
       "street": "SE 10th & Morrison",
       "schedule": {
@@ -178,7 +178,7 @@
   {
     "type": "Feature",
     "properties": {
-      "Name": "Outpost",
+      "Name": "XOXO Outpost",
       "RouteName": "XOXO",
       "Attr_TravelTime": 2,
       "CurbApproach": 3,

@@ -55,6 +55,12 @@ for($i=1; $i<=1; $i++) {
   ];
 }
 
+$stop = null;
+if($redis->get('xoxo-shuttle-current::1')) {
+  $stop = json_decode($redis->get('xoxo-shuttle-current::1'));
+}
+
 echo json_encode([
-  'shuttles' => $shuttles
+  'shuttles' => $shuttles,
+  'stop' => $stop
 ]);

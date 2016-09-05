@@ -12,6 +12,7 @@
   <script src="/assets/moment.min.js"></script>
   <script src="/assets/moment-timezone.min.js"></script>
   <script type="text/javascript" src="/assets/pushstream.js"></script>
+  <script type="text/javascript" src="/assets/js-cookie.js"></script>
   -->
   <script type="text/javascript" src="/assets/tracker-dist.js"></script>
 
@@ -27,6 +28,27 @@
       font-weight: 400;
       font-family: sans-serif;
     }
+    #container {
+      height: 100vh;
+      overflow-y: hidden;
+    }
+    #header {
+      height: 36px;
+      width: 100%;
+    }
+    #map {
+      width: 100%;
+      height: 50vh;
+    }
+    #stops {
+      width: 100%;
+      height: calc(50vh - 36px);
+      background: #fff;
+      overflow-y: scroll;
+    }
+    #stops .pad {
+      padding: 10px;
+    }
     #header {
       width: 100%;
       color: black;
@@ -39,13 +61,14 @@
     #header.offline {
       background-color: #e7726c;
     }
-    #map {
+/*    #map {
       position: absolute;
       top:36px;
       bottom:0;
       right:0;
       left:0;
     }
+*/
     .leaflet-control-container a {
       background-image: none;
     }
@@ -69,17 +92,169 @@
       height: 40px;
       display: block;
     }
+
+    #stops h3 {
+      margin: 0;
+      margin-bottom: 0.25em;
+      padding: 0;
+    }
+    #stops ul {
+      margin: 0;
+      padding: 0;
+      font-size: 16px;
+    }
+    #stops ul li {
+      margin: 0;
+      padding: .5em 0 .4em 0;
+      border-top: 1px #ccc solid;
+
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    #stops ul li .in {
+      padding-left: 40px;
+    }
+    #stops ul li:last-child {
+      border-bottom: 1px #ccc solid;
+    }
+    #stops .distance {
+      font-size: 12px;
+      color: #888;
+    }
+
+    #stops {
+      position: relative;
+    }
+    #current-stop {
+      position: absolute;
+      left: 16px;
+      top: 0;
+      display: none;
+    }
+
+    #current-stop.stop1,
+    #current-stop.stop2,
+    #current-stop.stop3,
+    #current-stop.stop4,
+    #current-stop.stop5,
+    #current-stop.stop6,
+    #current-stop.stop7 {
+      display: inline-block;
+    }
+
+    #current-stop.stop1 {
+      top: 51px;
+    }
+    #current-stop.stop1.departed {
+      top: 79px;
+    }
+
+    #current-stop.stop2 {
+      top: 108px;
+    }
+    #current-stop.stop2.departed {
+      top: 134px;
+    }
+
+    #current-stop.stop3 {
+      top: 163px;
+    }
+    #current-stop.stop3.departed {
+      top: 190px;
+    }
+
+    #current-stop.stop4 {
+      top: 218px;
+    }
+    #current-stop.stop4.departed {
+      top: 245px;
+    }
+
+    #current-stop.stop5 {
+      top: 273px;
+    }
+    #current-stop.stop5.departed {
+      top: 300px;
+    }
+
+    #current-stop.stop6 {
+      top: 329px;
+    }
+    #current-stop.stop6.departed {
+      top: 356px;
+    }
+
+    #current-stop.stop7 {
+      top: 384px;
+    }
+    #current-stop.stop7.departed {
+      top: 411px;
+    }
+
+
+    @keyframes thinkingAnimation {
+      0%   { opacity:1; }
+      50%  { opacity:0.5; }
+      100% { opacity:1; }
+    }
+    .animate-thinking {
+      opacity: 1;
+      animation: thinkingAnimation 1.5s infinite;
+    }
   </style>
 </head>
 <body>
 
-<div id="header">
-  <div style="font-weight: bold; float: left;">XOXO</div>
-  <div style="float: right;" id="header-text">Shuttle Tracker</div>
-  <div style="clear: both;"></div>
+<div id="container">
+  <div id="header">
+    <div style="font-weight: bold; float: left;">XOXO</div>
+    <div style="float: right;" id="header-text">Shuttle Tracker</div>
+    <div style="clear: both;"></div>
+  </div>
+  <div id="map">
+    <div id="locate-me"><a href="javascript:locateMe();"></a></div>
+  </div>
+  <div id="stops">
+    <div class="pad">
+      <? $stops = json_decode(file_get_contents('stop-order.json'), true); ?>
+      <? 
+        $now = new DateTime();
+        $now->setTimeZone(new DateTimeZone('US/Pacific'));
+        if($now->format('H') <= 3)
+          $today = $now->sub(new DateInterval('PT6H'));
+        $today = $now->format('j');
+        if($now->format('H') >= 18)
+          $index = 1;
+        else 
+          $index = 0;
+        if(array_key_exists($today, $stops)):
+          ?>
+          <h3><?= $now->format('M j') ?> <?= $index == 0 ? 'Morning' : 'Night' ?> Schedule</h3>
+          <ul>
+            <? foreach($stops[$today][$index] as $stop): ?>
+              <li id="stop-<?= md5($stop) ?>">
+                <div class="in">
+                  <div class="name"><?= $stop ?></div>
+                  <div class="distance"></div>
+                </div>
+              </li>
+            <? endforeach; ?>
+          </ul>
+          <?
+        else:
+          ?>
+          <p>The shuttle is not in service</p>
+          <?
+        endif;
+        ?>
+    </div>
+    <img src="/images/bus-right@2x.png" width="29" id="current-stop">
+    <input type="hidden" id="schedule-day" value="<?= $today ?>">
+    <input type="hidden" id="schedule-index" value="<?= $index ?>">
+  </div>
 </div>
-<div id="locate-me"><a href="javascript:locateMe();"></a></div>
-<div id="map"></div>
 
 <script type='text/javascript'>
   moment.tz.add('America/Los_Angeles|PST PDT|80 70|0101|1Lzm0 1zb0 Op0');
@@ -117,29 +292,9 @@
   L.esri.basemapLayer('Gray').addTo(map);
 
   map.attributionControl.setPrefix('shuttle tracker by <a href="http://aaronparecki.com/">aaronpk</a> | <a href="http://leafletjs.com/">Leaflet</a>');
-
-/*
-  var route1 = {"type":"LineString","coordinates":[[-122.65769365902497,45.514720684902905],[-122.65769365902497,45.514380768528405],[-122.6586818058375,45.514380768528405],[-122.65867282268466,45.51293295356695],[-122.66077488044951,45.51293295356695],[-122.66602104170877,45.51293295356695],[-122.66646121619797,45.51281964473755],[-122.66690139068719,45.51263709114366],[-122.66737749778778,45.51251119176838],[-122.66787157119404,45.51242935702343],[-122.67398011512607,45.514009376068394],[-122.67425859286413,45.51414786167903],[-122.6744023233096,45.51426116783426],[-122.67453707060221,45.514412242353025],[-122.67476164942323,45.514758453262225],[-122.67497724509143,45.51484028462046],[-122.67520182391247,45.51480251631606],[-122.67610912234942,45.513058851998736],[-122.67515690814827,45.51281964473755],[-122.67539047012212,45.51237899712122],[-122.67543538588633,45.5121397869704],[-122.67521080706531,45.512341227165],[-122.67438435700392,45.513952722765815],[-122.67248891175441,45.51743994198533],[-122.67456402006073,45.51798755425165],[-122.67382740152775,45.51932194343546],[-122.68342140876216,45.52187733627626],[-122.6831249647184,45.52238084827151],[-122.68309801525989,45.52255707640525],[-122.68154392981833,45.52214168063564],[-122.6785435567694,45.52134864383142],[-122.67892084918871,45.520681477227434],[-122.68066358083989,45.51733923110329],[-122.67964848456886,45.51708115864536],[-122.67960356880464,45.517169281081145],[-122.67861542199212,45.51907017431345],[-122.67822914641994,45.51973736002385],[-122.67782490454209,45.52037936144591],[-122.67677387565966,45.522399729883674],[-122.67742066266425,45.52260113335244],[-122.67735778059433,45.522840299035146],[-122.67739371320572,45.52295988149523],[-122.67744761212278,45.52304170092673],[-122.67437537385108,45.52309205128698],[-122.67020719093276,45.523098345078836],[-122.66918311150886,45.52307946370114],[-122.66578747973487,45.52301023192871],[-122.66176302726204,45.52294729387983],[-122.65713670354883,45.522922118640565],[-122.65665161329538,45.522922118640565],[-122.65665161329538,45.520977297358264],[-122.6565887312255,45.52078218212744],[-122.65778349055337,45.5193471202857],[-122.65856502485057,45.51864845851023],[-122.65866383953183,45.518428157953224],[-122.65867282268466,45.51830856586107],[-122.65867282268466,45.51507948329302],[-122.65769365902497,45.51507948329302],[-122.65769365902497,45.514720684902905]],"bbox":[-122.68342140876216,45.5121397869704,-122.6565887312255,45.523098345078836]};
-  var route2 = {"type":"LineString","coordinates":[[-122.65769365902497,45.514720684902905],[-122.65772060848349,45.5165209485049],[-122.65566346648285,45.5165209485049],[-122.65566346648285,45.51720704779709],[-122.65534007298058,45.51720704779709],[-122.66073894783814,45.51723222559364],[-122.66480831607518,45.51723852004102],[-122.66639833412809,45.517251108933664],[-122.66802428479234,45.5173707032733],[-122.67164449538734,45.51835892045717],[-122.67187805736123,45.51849110105753],[-122.67230026554475,45.51864845851023],[-122.6725517938243,45.518956877841006],[-122.67258772643567,45.51908905703667],[-122.67257874328283,45.519240118594375],[-122.67250687806009,45.5193471202857],[-122.67240806337884,45.51942894497119],[-122.67231823185044,45.519473004367924],[-122.67205772041805,45.519473004367924],[-122.6718511079027,45.51932194343546],[-122.6717433100686,45.51908905703667],[-122.67205772041805,45.51856033839093],[-122.67368367108229,45.515488636560164],[-122.6744023233096,45.51426116783426],[-122.67539047012212,45.51237899712122],[-122.67543538588633,45.5121397869704],[-122.67521080706531,45.512341227165],[-122.67438435700392,45.513952722765815],[-122.67248891175441,45.51743994198533],[-122.67456402006073,45.51798755425165],[-122.67382740152775,45.51932194343546],[-122.68342140876216,45.52187733627626],[-122.6831249647184,45.52238084827151],[-122.68309801525989,45.52255707640525],[-122.68154392981833,45.52214168063564],[-122.6785435567694,45.52134864383142],[-122.67892084918871,45.520681477227434],[-122.68066358083989,45.51733923110329],[-122.67964848456886,45.51708115864536],[-122.67960356880464,45.517169281081145],[-122.67861542199212,45.51907017431345],[-122.67822914641994,45.51973736002385],[-122.67782490454209,45.52037936144591],[-122.67677387565966,45.522399729883674],[-122.67742066266425,45.52260113335244],[-122.67735778059433,45.522840299035146],[-122.67739371320572,45.52295988149523],[-122.67744761212278,45.52304170092673],[-122.67437537385108,45.52309205128698],[-122.67020719093276,45.523098345078836],[-122.66918311150886,45.52307946370114],[-122.66578747973487,45.52301023192871],[-122.66176302726204,45.52294729387983],[-122.65713670354883,45.522922118640565],[-122.65665161329538,45.522922118640565],[-122.65665161329538,45.520977297358264],[-122.6565887312255,45.52078218212744],[-122.65778349055337,45.5193471202857],[-122.65856502485057,45.51864845851023],[-122.65866383953183,45.518428157953224],[-122.65867282268466,45.51830856586107],[-122.65867282268466,45.51507948329302],[-122.65769365902497,45.51507948329302],[-122.65769365902497,45.514720684902905]],"bbox":[-122.68342140876216,45.5121397869704,-122.65534007298058,45.523098345078836]};
-
-  L.geoJson(route1, {
-    style: {
-      "color": "#7800ff",
-      "weight": 5,
-      "opacity": 0.65
-    }
-  })//.addTo(map);
-
-  L.geoJson(route2, {
-    style: {
-      "color": "#ff7800",
-      "weight": 5,
-      "opacity": 0.65
-    }
-  })//.addTo(map);
-*/
     
   var stops = <?= file_get_contents('stops.geojson') ?>;
+  var order = <?= file_get_contents('stop-order.json') ?>;
 
   var icons = [];
   
@@ -216,19 +371,19 @@
   var schedule = [
     {
       from: (new Date(2016,8,8,18,0,0)),
-      to: (new Date(2016,8,9,2,0,0))
+      to:   (new Date(2016,8,9,2,0,0))
     },
     {
       from: (new Date(2016,8,9,9,0,0)),
-      to: (new Date(2016,8,10,2,0,0))
+      to:   (new Date(2016,8,10,2,0,0))
     },
     {
       from: (new Date(2016,8,10,9,0,0)),
-      to: (new Date(2016,8,11,2,0,0))
+      to:   (new Date(2016,8,11,2,0,0))
     },
     {
       from: (new Date(2016,8,11,9,0,0)),
-      to: (new Date(2016,8,12,2,0,0))
+      to:   (new Date(2016,8,12,2,0,0))
     }
   ];
   var active = false;
@@ -248,9 +403,9 @@
 
   function start_watching() {
     // Load the inital data
-    get_request('location.php', function(shuttles) {
-      for(var i=0; i<shuttles.shuttles.length; i++) {
-        data = shuttles.shuttles[i];
+    get_request('location.php', function(location) {
+      for(var i=0; i<location.shuttles.length; i++) {
+        data = location.shuttles[i];
 
         bus[data.current.properties.shuttle] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
           icon: busIcon
@@ -262,6 +417,9 @@
           "opacity": 0.65
         }).addTo(map);
         map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+      }
+      if(location.stop) {
+        setShuttleCurrentStop(location.stop);
       }
     });
 
@@ -276,17 +434,20 @@
       channelsArgument: "id"
     });
     pushstream.onmessage = function(data,id,channel) {
-      console.log(data);
-      
-      routeHistoryLine[data.properties.shuttle].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
-      bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
-      bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date));
+      if(channel == 'shuttle') {
+        routeHistoryLine[data.properties.shuttle].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
+        bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+        bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date));
 
-      if(autoPanBus && !map.getBounds().contains(bus[data.properties.shuttle].getLatLng())) {
-        map.panTo(bus[data.properties.shuttle].getLatLng());
+        if(autoPanBus && !map.getBounds().contains(bus[data.properties.shuttle].getLatLng())) {
+          map.panTo(bus[data.properties.shuttle].getLatLng());
+        }
+      } else if(channel == 'stop') {
+        setShuttleCurrentStop(data);
       }
     }
     pushstream.addChannel('shuttle');
+    pushstream.addChannel('stop');
     pushstream.connect();
   }
 
@@ -308,6 +469,24 @@
   }
   */
 
+  function setShuttleCurrentStop(data) {
+    // data contains the name of the current stop and the status (arrived, departed)
+    // Figure out what index the current stop is given the current time of day
+    var day = document.getElementById("schedule-day").value;
+    var index = document.getElementById("schedule-index").value;
+
+    // console.log(data);
+    if(order[day] && order[day][index]) {
+      var currentStops = order[day][index];
+      // console.log(currentStops);
+      for(var i=0; i<currentStops.length; i++) {
+        if(currentStops[i] == data.stop) {
+          document.getElementById("current-stop").classList = "stop"+(i+1)+" "+data.status;
+        }
+      }
+    }
+  }
+
   function bus_popup(date_str) {
     var contents = '';
     
@@ -320,9 +499,16 @@
     document.getElementById('locate-me').classList.add('hidden');
   }
 
+  var lastLocationUpdate = false;
+
   function locateMe() {
+    Cookies.set('locate-me', 1);
+    document.getElementById('locate-me').classList = "animate-thinking";
+
     if(navigator.geolocation) {
       navigator.geolocation.watchPosition(function(position){
+        document.getElementById('locate-me').classList = "";
+
         autoPanBus = false;
         if(me == null) {
           me = L.marker([position.coords.latitude, position.coords.longitude], {
@@ -334,13 +520,35 @@
         if(autoPanMe) {
           map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
         }
-        get_request('me.php?uniq='+uniqid+'&lat='+position.coords.latitude+'&lng='+position.coords.longitude, function(data){
-          console.log(data);
-        });
+        var now = Math.floor((new Date()).getTime()/1000);
+        if(lastLocationUpdate == false || now - lastLocationUpdate > 5) {
+          get_request('me.php?uniq='+uniqid+'&lat='+position.coords.latitude+'&lng='+position.coords.longitude, function(data){
+            lastLocationUpdate = Math.floor((new Date()).getTime()/1000);
+            for(var i=0; i<data.length; i++) {
+              if(document.getElementById('stop-'+data[i].stop)) {
+                var distance;
+                if(data[i].distance < 0.1) {
+                  distance = "You are here";
+                } else {
+                  distance = (Math.round(data[i].distance*10)/10)+" miles";
+                  distance += " &bull; ";
+                  distance += (Math.round(data[i].seconds/60))+" minutes walking";
+                }
+                document.querySelector("#stop-"+data[i].stop+" .distance").innerHTML = distance;
+              }
+            }
+          });
+        }
       });
     }
     return false;
   }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    if(Cookies.get('locate-me') == 1) {
+      locateMe();
+    }
+  });
 
 </script>
 
