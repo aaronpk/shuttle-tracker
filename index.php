@@ -282,7 +282,7 @@
       bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
       bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date));
 
-      if(autoPanBus && !map.getBounds().contains(bus.getLatLng())) {
+      if(autoPanBus && !map.getBounds().contains(bus[data.properties.shuttle].getLatLng())) {
         map.panTo(bus[data.properties.shuttle].getLatLng());
       }
     }
