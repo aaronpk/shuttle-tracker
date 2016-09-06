@@ -481,7 +481,14 @@
       // console.log(currentStops);
       for(var i=0; i<currentStops.length; i++) {
         if(currentStops[i] == data.stop) {
-          document.getElementById("current-stop").classList = "stop"+(i+1)+" "+data.status;
+          document.getElementById("current-stop").classList.add("stop"+(i+1));
+        } else {
+          document.getElementById("current-stop").classList.remove("stop"+(i+1));
+        }
+        if(data.status == "departed") {
+          document.getElementById("current-stop").classList.add("departed");
+        } else {
+          document.getElementById("current-stop").classList.remove("departed");
         }
       }
     }
@@ -503,11 +510,11 @@
 
   function locateMe() {
     Cookies.set('locate-me', 1);
-    document.getElementById('locate-me').classList = "animate-thinking";
+    document.getElementById('locate-me').classList.add("animate-thinking");
 
     if(navigator.geolocation) {
       navigator.geolocation.watchPosition(function(position){
-        document.getElementById('locate-me').classList = "";
+        document.getElementById('locate-me').classList.remove("animate-thinking");
 
         autoPanBus = false;
         if(me == null) {
