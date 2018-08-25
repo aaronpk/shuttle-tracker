@@ -1,5 +1,5 @@
 <?php
-chdir('..');
+chdir(dirname(__FILE__).'/..');
 include('lib/inc.php');
 
 echo "Starting...\n";
@@ -35,6 +35,8 @@ $redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use(
   echo $data->geometry->coordinates[1] . ',' . $data->geometry->coordinates[0] . "\n";
 
   foreach($stops as $stop) {
+    if($stop->properties->Name == 'Yale Union') continue;
+    
     if(geo\gcDistance($stop->geometry->coordinates[1], $stop->geometry->coordinates[0],
       $data->geometry->coordinates[1], $data->geometry->coordinates[0]) <= 40) {
       // Shuttle is inside this stop right now

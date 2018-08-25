@@ -33,7 +33,7 @@
       "CurbApproach": 3,
       "icon": "hilton",
       "address": "921 SW 6th Ave, Portland, OR 97204",
-      "street": "SW Broadway & Taylor",
+      "street": "SW 6th & Salmon",
       "schedule": {
         "8": "Thu: 6pm - 2am",
         "9": "Fri: 9am - 2am",
@@ -44,8 +44,8 @@
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.68051743507387,
-        45.51769958629577
+        -122.680226,
+        45.517198
       ]
     }
   },
@@ -94,8 +94,8 @@
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.67402380704878,
-        45.521074876815305
+        -122.673679,
+        45.521986
       ]
     }
   },
@@ -133,7 +133,7 @@
       "CurbApproach": 3,
       "icon": "xoxo",
       "address": "1300 SE Stark St, Portland, Oregon, 97214",
-      "street": "SE 13th & Stark",
+      "street": "SE 14th btw Stark & Alder",
       "schedule": {
         "8": "Thu: 6pm - 2am",
         "9": "Fri: 9am - 2am",
@@ -144,8 +144,8 @@
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.652624,
-        45.519289
+        -122.651623,
+        45.518737
       ]
     }
   },
@@ -196,8 +196,8 @@
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.655806,
-        45.526041
+        -122.655145,
+        45.525762
       ]
     }
   }

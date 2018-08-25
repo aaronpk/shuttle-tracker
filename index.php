@@ -207,6 +207,17 @@
 </head>
 <body>
 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-4617305-28', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
 <div id="container">
   <div id="header">
     <div style="font-weight: bold; float: left;">XOXO</div>
@@ -220,6 +231,7 @@
     <div class="pad">
       <? $stops = json_decode(file_get_contents('stop-order.json'), true); ?>
       <? 
+        # $now = new DateTime('2016-09-09T09:00:00-0700');
         $now = new DateTime();
         $now->setTimeZone(new DateTimeZone('US/Pacific'));
         if($now->format('H') <= 3)
@@ -229,7 +241,7 @@
           $index = 1;
         else 
           $index = 0;
-        if(array_key_exists($today, $stops)):
+        if(array_key_exists($today, $stops) && array_key_exists($index, $stops[$today]) && count($stops[$today][$index])):
           ?>
           <h3><?= $now->format('M j') ?> <?= $index == 0 ? 'Morning' : 'Night' ?> Schedule</h3>
           <ul>
@@ -260,7 +272,7 @@
   moment.tz.add('America/Los_Angeles|PST PDT|80 70|0101|1Lzm0 1zb0 Op0');
 
   function get_request(url, callback) {
-    request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
     request.open('GET', url, true);
     
     request.onload = function() {
@@ -315,7 +327,7 @@
   });
 
   var today = new Date();
-  // today = new Date(2016,9,9,9,0,0);
+  // today = new Date(2016,8,9,9,0,0);
   
   var uniqid = today.toISOString()+today.getMilliseconds();
   
@@ -370,7 +382,7 @@
   // Show a warning when viewing the map outside the schedule times
   var schedule = [
     {
-      from: (new Date(2016,8,8,18,0,0)),
+      from: (new Date(2016,8,8,17,0,0)),
       to:   (new Date(2016,8,9,2,0,0))
     },
     {
