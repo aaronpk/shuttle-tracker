@@ -4,20 +4,24 @@
   <title>XOXO Shuttle</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-  <link rel="stylesheet" href="/assets/leaflet.css" />
-
   <!--
+  <link rel="stylesheet" href="/assets/leaflet.css" />
   <script src="/assets/leaflet.js"></script>
-  <script src="/assets/esri-leaflet.js"></script>
+  -->
+
+  <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script>
+  <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
+
   <script src="/assets/moment.min.js"></script>
   <script src="/assets/moment-timezone.min.js"></script>
   <script type="text/javascript" src="/assets/pushstream.js"></script>
   <script type="text/javascript" src="/assets/js-cookie.js"></script>
-  -->
+
+  <!--
   <script type="text/javascript" src="/assets/tracker-dist.js"></script>
+  -->
 
-
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 
   <!-- <link href="/assets/style.css" rel="stylesheet" type="text/css"/> -->
 
@@ -59,21 +63,10 @@
       padding-left: 12px;
     }
     #header.offline {
-      background-color: #e7726c;
-    }
-/*    #map {
-      position: absolute;
-      top:36px;
-      bottom:0;
-      right:0;
-      left:0;
-    }
-*/
-    .leaflet-control-container a {
-      background-image: none;
+      background-color: #F52253;
     }
     #locate-me {
-      background: white;
+      background: transparent;
       width: 40px;
       height: 40px;
       border-radius: 20px;
@@ -86,6 +79,7 @@
       display: none;
     }
     #locate-me a {
+      background-color: transparent;
       background: url(/images/locate-me@2x.png) no-repeat center center;
       background-size: 40px;
       width: 40px;
@@ -219,15 +213,16 @@
   <div id="stops">
     <div class="pad">
       <? $stops = json_decode(file_get_contents('stop-order.json'), true); ?>
-      <? 
+      <?
         $now = new DateTime();
+        $now = new DateTime('2016-09-10T09:00:00-0700');
         $now->setTimeZone(new DateTimeZone('US/Pacific'));
         if($now->format('H') <= 3)
           $today = $now->sub(new DateInterval('PT6H'));
         $today = $now->format('j');
         if($now->format('H') >= 18)
           $index = 1;
-        else 
+        else
           $index = 0;
         if(array_key_exists($today, $stops)):
           ?>
@@ -259,10 +254,12 @@
 <script type='text/javascript'>
   moment.tz.add('America/Los_Angeles|PST PDT|80 70|0101|1Lzm0 1zb0 Op0');
 
+  L.mapbox.accessToken = 'pk.eyJ1IjoiYWFyb25wayIsImEiOiJjamxhM2g4OWsxdjBvM3BuNXBud29qYXd5In0.Gl2tcr7jV3okCU5WMJNHcA';
+
   function get_request(url, callback) {
     request = new XMLHttpRequest();
     request.open('GET', url, true);
-    
+
     request.onload = function() {
       if (request.status >= 200 && request.status < 400){
         // Success!
@@ -272,32 +269,32 @@
         console.log("Error: " + request.status);
       }
     };
-    
+
     request.onerror = function() {
       // There was a connection error of some sort
         console.log("There was an error connecting");
     };
-    
+
     request.send();
   }
 
   var map = L.map('map');
-  
+
   var bus = [];
   var routeHistoryLine = [];
   var me = null;
   var autoPanBus = true;
   var autoPanMe = true;
 
-  L.esri.basemapLayer('Gray').addTo(map);
+  var mapboxTiles = L.mapbox.styleLayer('mapbox://styles/aaronpk/cjla32atp29ho2qp9nauwjdjo');
 
-  map.attributionControl.setPrefix('shuttle tracker by <a href="http://aaronparecki.com/">aaronpk</a> | <a href="http://leafletjs.com/">Leaflet</a>');
-    
+  map.addLayer(mapboxTiles);
+
   var stops = <?= file_get_contents('stops.geojson') ?>;
   var order = <?= file_get_contents('stop-order.json') ?>;
 
   var icons = [];
-  
+
   var busIcon = L.icon({
     iconUrl: '/images/bus.png',
     iconRetinaUrl: '/images/bus@2x.png',
@@ -315,12 +312,12 @@
   });
 
   var today = new Date();
-  // today = new Date(2016,9,9,9,0,0);
-  
+  today = new Date(2018,8,6,19,0,0);
+
   var uniqid = today.toISOString()+today.getMilliseconds();
-  
+
   var date = "";
-  if(today.getDate() <= 7) {
+  if(today.getDate() <= 6) {
     // show the first day of xoxo if it's before the first day
     date = "8";
   } else if(today.getHours() >= 0 && today.getHours() <= 4) {
@@ -337,7 +334,7 @@
     if("show_on" in stops[i].properties && stops[i].properties.show_on.indexOf(date) == -1) {
       continue;
     }
-  
+
     var stopLocation = new L.LatLng(stops[i].geometry.coordinates[1], stops[i].geometry.coordinates[0]);
 
     var marker = L.marker(stopLocation, {
@@ -350,12 +347,12 @@
       })
     })
     var stop_schedule = '';
-    
+
     if(date in stops[i].properties.schedule) {
       stop_schedule = stops[i].properties.schedule[date];
     }
     marker.addTo(map);
-    marker.bindPopup('<b>'+stops[i].properties.Name+'</b><br>'+stops[i].properties.street+'<br>'+stop_schedule);
+    marker.bindPopup('<b>'+stops[i].properties.name+'</b><br>'+stops[i].properties.street+'<br>'+stop_schedule);
 
     bounds.extend(stopLocation);
   }
@@ -370,20 +367,20 @@
   // Show a warning when viewing the map outside the schedule times
   var schedule = [
     {
-      from: (new Date(2016,8,8,18,0,0)),
-      to:   (new Date(2016,8,9,2,0,0))
+      from: (new Date(2018,8,6,18,0,0)),
+      to:   (new Date(2018,8,7,2,0,0))
     },
     {
-      from: (new Date(2016,8,9,9,0,0)),
-      to:   (new Date(2016,8,10,2,0,0))
+      from: (new Date(2018,8,7,9,0,0)),
+      to:   (new Date(2018,8,8,2,0,0))
     },
     {
-      from: (new Date(2016,8,10,9,0,0)),
-      to:   (new Date(2016,8,11,2,0,0))
+      from: (new Date(2018,8,8,9,0,0)),
+      to:   (new Date(2018,8,9,2,0,0))
     },
     {
-      from: (new Date(2016,8,11,9,0,0)),
-      to:   (new Date(2016,8,12,2,0,0))
+      from: (new Date(2018,8,9,9,0,0)),
+      to:   (new Date(2018,8,10,2,0,0))
     }
   ];
   var active = false;
@@ -496,12 +493,12 @@
 
   function bus_popup(date_str) {
     var contents = '';
-    
+
     var date = moment(date_str);
     contents += '<b>' + date.tz('America/Los_Angeles').format('h:mma') + '</b><br>' + date.fromNow();
     return contents;
   }
-  
+
   if(!navigator.geolocation) {
     document.getElementById('locate-me').classList.add('hidden');
   }

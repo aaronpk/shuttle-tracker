@@ -9,14 +9,14 @@
   </style>
 </head>
 <body>
-  
+
 <div style="padding:30px;">
 
 <?php
 $stops = json_decode(file_get_contents('stops.geojson'));
 
 foreach($stops as $stop) {
-  echo '<h3>' . $stop->properties->Name . '</h3>';
+  echo '<h3>' . $stop->properties->name . '</h3>';
   echo '<ul>';
     foreach($stop->properties->schedule as $s) {
       echo '<li>' . $s . '</li>';
@@ -26,6 +26,6 @@ foreach($stops as $stop) {
 ?>
 
 </div>
-  
+
 </body>
 </html>

@@ -2,202 +2,154 @@
   {
     "type": "Feature",
     "properties": {
-      "Name": "Mariott Downtown",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "mariott",
-      "address": "520 SW Broadway, Portland, OR 97205",
-      "street": "SW Broadway & Alder",
+      "name": "XOXO",
+      "address": "300 N Winning Way, Portland, OR 97227",
+      "street": "N Winning Way",
+      "icon": "xoxo",
       "schedule": {
-        "8": "Thu: 6pm - 2am",
-        "9": "Fri: 9am - 2am",
-        "10": "Sat: 9am - 2am",
-        "11": "Sun: 9am - 2am"
+        "6": "Thu: 6pm - 2am",
+        "7": "Fri: 6pm - 2am",
+        "8": "Sat: 6pm - 2am",
+        "9": "Sun: 6pm - 2am"
       }
     },
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.6790958642959,
-        45.520311883418934
+        -122.66932725906372,
+        45.533108507338945
       ]
     }
   },
   {
     "type": "Feature",
     "properties": {
-      "Name": "Hilton",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "hilton",
-      "address": "921 SW 6th Ave, Portland, OR 97204",
-      "street": "SW Broadway & Taylor",
+      "name": "Canopy Hotel",
+      "address": "425 NW 9th Ave, Portland, OR 97209",
+      "street": "NW 9th & Glisan",
+      "icon": "canopy",
       "schedule": {
-        "8": "Thu: 6pm - 2am",
-        "9": "Fri: 9am - 2am",
-        "10": "Sat: 9am - 2am",
-        "11": "Sun: 9am - 2am"
+        "6": "Thu: 6pm - 2am",
+        "7": "Fri: 6pm - 2am",
+        "8": "Sat: 6pm - 2am",
+        "9": "Sun: 6pm - 2am"
       }
     },
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.68051743507387,
-        45.51769958629577
+        -122.68030822277068,
+        45.52637044238647
       ]
     }
   },
   {
     "type": "Feature",
     "properties": {
-      "Name": "Ace Hotel",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
+      "name": "Ace Hotel",
+      "address": "1022 SW Stark St, Portland, OR 97205",
+      "street": "SW Stark & 10th",
       "icon": "acehotel",
-      "address": "1022 SW Stark St, Portland, Oregon, 97205",
-      "street": "SW 10th & Stark",
       "schedule": {
-        "8": "Thu: 6pm - 2am",
-        "9": "Fri: 9am - 2am",
-        "10": "Sat: 9am - 2am",
-        "11": "Sun: 9am - 2am"
+        "6": "Thu: 6pm - 2am",
+        "7": "Fri: 6pm - 2am",
+        "8": "Sat: 6pm - 2am",
+        "9": "Sun: 6pm - 2am"
       }
     },
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.6814615726471,
-        45.522131023013806
+        -122.68154203891754,
+        45.52212350602907
       ]
     }
   },
   {
     "type": "Feature",
     "properties": {
-      "Name": "Embassy Suites",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "embassy",
+      "name": "Pioneer Square",
+      "address": "701 SW Broadway St, Portland, OR 97205",
+      "street": "SW Broadway & Morrison",
+      "icon": "pioneersquare",
+      "schedule": {
+        "6": "Thu: 6pm - 2am",
+        "7": "Fri: 6pm - 2am",
+        "8": "Sat: 6pm - 2am",
+        "9": "Sun: 6pm - 2am"
+      }
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -122.67980933189392,
+        45.51903957831533
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "name": "AC Hotels",
+      "address": "888 SW 3rd Ave, Portland, OR 97204",
+      "street": "SW Taylor & 3rd",
+      "icon": "achotels",
+      "schedule": {
+        "6": "Thu: 6pm - 2am",
+        "7": "Fri: 6pm - 2am",
+        "8": "Sat: 6pm - 2am",
+        "9": "Sun: 6pm - 2am"
+      }
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -122.67597377300262,
+        45.51688392335582
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "name": "Embassy Suites",
       "address": "319 SW Pine St, Portland, OR 97204",
-      "street": "SW 3rd & Pine",
+      "street": "SW Pine & 3rd",
+      "icon": "embassy",
       "schedule": {
-        "8": "Thu: 6pm - 2am",
-        "9": "Fri: 9am - 2am",
-        "10": "Sat: 9am - 2am",
-        "11": "Sun: 9am - 2am"
+        "6": "Thu: 6pm - 2am",
+        "7": "Fri: 6pm - 2am",
+        "8": "Sat: 6pm - 2am",
+        "9": "Sun: 6pm - 2am"
       }
     },
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.67402380704878,
-        45.521074876815305
+        -122.67412841320038,
+        45.521743896993634
       ]
     }
   },
   {
     "type": "Feature",
     "properties": {
-      "Name": "Jupiter Hotel",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "jupiter",
-      "address": "800 E Burnside St, Portland, Oregon, 97214",
-      "street": "SE 9th & Burnside",
+      "name": "The Society Hotel",
+      "address": "203 NW 3rd Ave, Portland, OR 97209",
+      "street": "NW 3rd & Davis",
+      "icon": "society",
       "schedule": {
-        "8": "Thu: 6pm - 2am",
-        "9": "Fri: 9am - 2am",
-        "10": "Sat: 9am - 2am",
-        "11": "Sun: 9am - 2am"
+        "6": "Thu: 6pm - 2am",
+        "7": "Fri: 6pm - 2am",
+        "8": "Sat: 6pm - 2am",
+        "9": "Sun: 6pm - 2am"
       }
     },
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.65690863132475,
-        45.52294660989203
-      ]
-    }
-  },
-  {
-    "type": "Feature",
-    "properties": {
-      "Name": "Revolution Hall",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "xoxo",
-      "address": "1300 SE Stark St, Portland, Oregon, 97214",
-      "street": "SE 13th & Stark",
-      "schedule": {
-        "8": "Thu: 6pm - 2am",
-        "9": "Fri: 9am - 2am",
-        "10": "Sat: 9am - 2am",
-        "11": "Sun: 9am - 6pm"
-      }
-    },
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.652624,
-        45.519289
-      ]
-    }
-  },
-  {
-    "type": "Feature",
-    "properties": {
-      "Name": "Yale Union",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "yaleunion",
-      "address": "1001 SE Morrison St, Portland, Oregon, 97214",
-      "street": "SE 10th & Morrison",
-      "schedule": {
-        "8": "Thu: No Pickups",
-        "9": "Fri: 6pm - 2am",
-        "10": "Sat: 6pm - 2am",
-        "11": "Sun: No Pickups"
-      },
-      "show_on": ["9","10"]
-    },
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.65550315380096,
-        45.51725228872825
-      ]
-    }
-  },
-  {
-    "type": "Feature",
-    "properties": {
-      "Name": "XOXO Outpost",
-      "RouteName": "XOXO",
-      "Attr_TravelTime": 2,
-      "CurbApproach": 3,
-      "icon": "xoxo",
-      "address": "419 NE 10th Ave, Portland, Oregon, 97232",
-      "street": "NE 10th & Flanders",
-      "schedule": {
-        "8": "Thu: No Pickups",
-        "9": "Fri: No Pickups",
-        "10": "Sat: No Pickups",
-        "11": "Sun: 6pm - 2am"
-      },
-      "show_on": ["11"]
-    },
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.655806,
-        45.526041
+        -122.67349541187285,
+        45.52473935607895
       ]
     }
   }
