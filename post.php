@@ -21,28 +21,9 @@ if(!is_array($input->locations)) {
 
 
 if(count($input->locations) > 0) {
-  $loc = $input->locations[count($input->locations)-1];
+  $data = $input->locations[count($input->locations)-1];
+  $shuttle = $data->properties->shuttle;
 
-  $shuttle = (int)$loc->shuttle;
-
-	$data = array(
-		'type' => 'Feature',
-		'geometry' => array(
-			'type' => 'Point',
-			'coordinates' => array((double)$loc->longitude, (double)$loc->latitude)
-		),
-		'properties' => array(
-			'shuttle' => (int)$loc->shuttle,
-			'date' => date('Y-m-d\TH:i:s\Z', $loc->timestamp),
-			'accuracy' => (int)$loc->horizontal_accuracy,
-			'speed' => (int)$loc->speed,
-			'altitude' => (int)$loc->altitude,
-			'walking' => (in_array('walking', $loc->motion) ? 1 : 0),
-			'running' => (in_array('running', $loc->motion) ? 1 : 0),
-			'driving' => (in_array('driving', $loc->motion) ? 1 : 0),
-			'stationary' => (in_array('stationary', $loc->motion) ? 1 : 0),
-		)
-	);
 	$redis->publish('xoxo-tracker-'.$shuttle, json_encode($data));
 	$redis->set('xoxo-tracker-location-'.$shuttle, json_encode($data));
 	$redis->lpush('xoxo-history-'.$shuttle, json_encode($data));

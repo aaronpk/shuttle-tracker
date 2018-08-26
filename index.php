@@ -416,17 +416,20 @@
     get_request('location.php', function(location) {
       for(var i=0; i<location.shuttles.length; i++) {
         data = location.shuttles[i];
+        console.log(data);
 
-        bus[data.current.properties.shuttle] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
-          icon: busIcon
-        }).addTo(map);
-        bus[data.current.properties.shuttle].bindPopup(bus_popup(data.current.properties.date));
-        routeHistoryLine[data.current.properties.shuttle] = L.polyline(data.history, {
-          "color": "#257eca",
-          "weight": 5,
-          "opacity": 0.65
-        }).addTo(map);
-        map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+        if(data.current) {
+          bus[data.current.properties.shuttle] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
+            icon: busIcon
+          }).addTo(map);
+          bus[data.current.properties.shuttle].bindPopup(bus_popup(data.current.properties.date));
+          routeHistoryLine[data.current.properties.shuttle] = L.polyline(data.history, {
+            "color": "#257eca",
+            "weight": 5,
+            "opacity": 0.65
+          }).addTo(map);
+          map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
+        }
       }
       if(location.stop) {
         setShuttleCurrentStop(location.stop);

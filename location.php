@@ -3,19 +3,21 @@ include('lib/inc.php');
 
 header('Content-type: application/json');
 
-$shuttles = [];
+$shuttles = ['rose','grey'];
 
-for($i=1; $i<=1; $i++) {
+$positions = [];
 
-  $current = $redis->get('xoxo-tracker-location-'.$i);
+foreach($shuttles as $shuttle) {
+
+  $current = $redis->get('xoxo-tracker-location-'.$shuttle);
 
   $history = array();
 
-  $loc = $redis->lrange('xoxo-history-'.$i, 0, 1000);
+  $loc = $redis->lrange('xoxo-history-'.$shuttle, 0, 1000);
   $coordinates = [];
   foreach($loc as $l) {
     $p = json_decode($l, true);
-    if($p['properties']['accuracy'] <= 100)
+    if(isset($p['properties']['accuracy']) && $p['properties']['accuracy'] <= 100)
       $coordinates[] = $p['geometry']['coordinates'];
   }
 
@@ -40,27 +42,28 @@ for($i=1; $i<=1; $i++) {
     $last = $c;
   }
 
-
-  // Simplify the line
-  $newCoordinates = geo\ramerDouglasPeucker($newCoordinates, 0.0001);
+  if(count($newCoordinates)) {
+    // Simplify the line
+    $newCoordinates = geo\ramerDouglasPeucker($newCoordinates, 0.0001);
+  }
 
   $history = array_map(function($item){
     return array($item[1],$item[0]);
   }, $newCoordinates);
   $history = array_reverse($history);
 
-  $shuttles[] = [
+  $positions[] = [
     'current' => json_decode($current),
     'history' => $history
   ];
 }
 
 $stop = null;
-if($redis->get('xoxo-shuttle-current::1')) {
-  $stop = json_decode($redis->get('xoxo-shuttle-current::1'));
+if($redis->get('xoxo-shuttle-current::rose')) {
+  $stop = json_decode($redis->get('xoxo-shuttle-current::rose'));
 }
 
 echo json_encode([
-  'shuttles' => $shuttles,
+  'shuttles' => $positions,
   'stop' => $stop
 ]);

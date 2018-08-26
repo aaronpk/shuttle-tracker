@@ -15,7 +15,7 @@ $data = array(
   )
 );
 
-$redis->lpush('xoxo-visitors-2016', json_encode($data));
+$redis->lpush('xoxo-visitors-2018', json_encode($data));
 
 // Look up the distance from this person to each stop
 $distance = getDistanceToStops($_GET['lat'], $_GET['lng']);

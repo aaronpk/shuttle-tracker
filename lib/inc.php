@@ -73,8 +73,8 @@ function getDistanceToStops($lat, $lng) {
   $response = [];
   foreach($stops as $i=>$stop) {
     $response[] = [
-      'name' => $stop['properties']['Name'],
-      'stop' => md5($stop['properties']['Name']),
+      'name' => $stop['properties']['name'],
+      'stop' => md5($stop['properties']['name']),
       'distance' => $data['distance'][$i+1],
       'seconds' => $data['time'][$i+1],
     ];
