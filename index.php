@@ -21,7 +21,8 @@
   <script type="text/javascript" src="/assets/tracker-dist.js"></script>
   -->
 
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/assets/xoxo-shuttle-icon.png">
+  <link rel="stylesheet" href="https://use.typekit.net/tnr5bfv.css">
 
   <!-- <link href="/assets/style.css" rel="stylesheet" type="text/css"/> -->
 
@@ -56,7 +57,8 @@
     #header {
       width: 100%;
       color: black;
-      font-size: 18px;
+      font-size: 20px;
+      font-family: "cortado",sans-serif;
     }
     #header div {
       padding: 6px;
