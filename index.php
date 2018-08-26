@@ -37,10 +37,6 @@
       height: 100vh;
       overflow-y: hidden;
     }
-    #header {
-      height: 36px;
-      width: 100%;
-    }
     #map {
       width: 100%;
       height: 50vh;
@@ -48,15 +44,18 @@
     #stops {
       width: 100%;
       height: calc(50vh - 36px);
-      background: #fff;
+      background: #05051A;
+      color: white;
       overflow-y: scroll;
     }
     #stops .pad {
       padding: 10px;
     }
     #header {
+      background: #05051A;
+      color: white;
+      height: 36px;
       width: 100%;
-      color: black;
       font-size: 20px;
       font-family: "cortado",sans-serif;
     }
@@ -102,7 +101,7 @@
     #stops ul li {
       margin: 0;
       padding: .5em 0 .4em 0;
-      border-top: 1px #ccc solid;
+      border-top: 1px #0E0E4A solid;
 
       height: 40px;
       display: flex;
@@ -113,7 +112,7 @@
       padding-left: 40px;
     }
     #stops ul li:last-child {
-      border-bottom: 1px #ccc solid;
+      border-bottom: 1px #0E0E4A solid;
     }
     #stops .distance {
       font-size: 12px;
