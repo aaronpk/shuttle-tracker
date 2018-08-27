@@ -44,7 +44,7 @@
     #stops {
       width: 100%;
       height: calc(50vh - 36px);
-      background: #05051A;
+      background: #1E232A;
       color: white;
       overflow-y: scroll;
     }
@@ -52,7 +52,7 @@
       padding: 10px;
     }
     #header {
-      background: #05051A;
+      background: #1E232A;
       color: white;
       height: 36px;
       width: 100%;
@@ -101,7 +101,7 @@
     #stops ul li {
       margin: 0;
       padding: .5em 0 .4em 0;
-      border-top: 1px #0E0E4A solid;
+      border-top: 1px #424D5C solid;
 
       height: 40px;
       display: flex;
@@ -112,7 +112,7 @@
       padding-left: 40px;
     }
     #stops ul li:last-child {
-      border-bottom: 1px #0E0E4A solid;
+      border-bottom: 1px #424D5C solid;
     }
     #stops .distance {
       font-size: 12px;
@@ -122,69 +122,69 @@
     #stops {
       position: relative;
     }
-    #current-stop {
+    .current-stop {
       position: absolute;
       left: 16px;
       top: 0;
       display: none;
     }
 
-    #current-stop.stop1,
-    #current-stop.stop2,
-    #current-stop.stop3,
-    #current-stop.stop4,
-    #current-stop.stop5,
-    #current-stop.stop6,
-    #current-stop.stop7 {
+    .current-stop.stop1,
+    .current-stop.stop2,
+    .current-stop.stop3,
+    .current-stop.stop4,
+    .current-stop.stop5,
+    .current-stop.stop6,
+    .current-stop.stop7 {
       display: inline-block;
     }
 
-    #current-stop.stop1 {
+    .current-stop.stop1 {
       top: 51px;
     }
-    #current-stop.stop1.departed {
+    .current-stop.stop1.departed {
       top: 79px;
     }
 
-    #current-stop.stop2 {
+    .current-stop.stop2 {
       top: 108px;
     }
-    #current-stop.stop2.departed {
+    .current-stop.stop2.departed {
       top: 134px;
     }
 
-    #current-stop.stop3 {
+    .current-stop.stop3 {
       top: 163px;
     }
-    #current-stop.stop3.departed {
+    .current-stop.stop3.departed {
       top: 190px;
     }
 
-    #current-stop.stop4 {
+    .current-stop.stop4 {
       top: 218px;
     }
-    #current-stop.stop4.departed {
+    .current-stop.stop4.departed {
       top: 245px;
     }
 
-    #current-stop.stop5 {
+    .current-stop.stop5 {
       top: 273px;
     }
-    #current-stop.stop5.departed {
+    .current-stop.stop5.departed {
       top: 300px;
     }
 
-    #current-stop.stop6 {
+    .current-stop.stop6 {
       top: 329px;
     }
-    #current-stop.stop6.departed {
+    .current-stop.stop6.departed {
       top: 356px;
     }
 
-    #current-stop.stop7 {
+    .current-stop.stop7 {
       top: 384px;
     }
-    #current-stop.stop7.departed {
+    .current-stop.stop7.departed {
       top: 411px;
     }
 
@@ -257,7 +257,8 @@
         endif;
         ?>
     </div>
-    <img src="/images/bus-right@2x.png" width="29" id="current-stop">
+    <img src="/images/bus-right@2x.png" width="29" class="current-stop" id="shuttle-rose">
+    <img src="/images/bus-right@2x.png" width="29" class="current-stop" id="shuttle-grey">
     <input type="hidden" id="schedule-day" value="<?= $today ?>">
     <input type="hidden" id="schedule-index" value="<?= $index ?>">
   </div>
@@ -423,15 +424,17 @@
           }).addTo(map);
           bus[data.current.properties.shuttle].bindPopup(bus_popup(data.current.properties.date));
           routeHistoryLine[data.current.properties.shuttle] = L.polyline(data.history, {
-            "color": "#257eca",
+            "color": "#6A0A1C",
             "weight": 5,
             "opacity": 0.65
           }).addTo(map);
           map.panTo(new L.LatLng(data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]));
         }
       }
-      if(location.stop) {
-        setShuttleCurrentStop(location.stop);
+      if(location.stops) {
+        for(var i=0; i<location.stops.length; i++) {
+          setShuttleCurrentStop(location.stops[i]);
+        }
       }
     });
 
@@ -493,14 +496,14 @@
       // console.log(currentStops);
       for(var i=0; i<currentStops.length; i++) {
         if(currentStops[i] == data.stop) {
-          document.getElementById("current-stop").classList.add("stop"+(i+1));
+          document.getElementById("shuttle-"+data.shuttle).classList.add("stop"+(i+1));
         } else {
-          document.getElementById("current-stop").classList.remove("stop"+(i+1));
+          document.getElementById("shuttle-"+data.shuttle).classList.remove("stop"+(i+1));
         }
         if(data.status == "departed") {
-          document.getElementById("current-stop").classList.add("departed");
+          document.getElementById("shuttle-"+data.shuttle).classList.add("departed");
         } else {
-          document.getElementById("current-stop").classList.remove("departed");
+          document.getElementById("shuttle-"+data.shuttle).classList.remove("departed");
         }
       }
     }

@@ -27,6 +27,8 @@ if(count($input->locations) > 0) {
 	$redis->publish('xoxo-tracker-'.$shuttle, json_encode($data));
 	$redis->set('xoxo-tracker-location-'.$shuttle, json_encode($data));
 	$redis->lpush('xoxo-history-'.$shuttle, json_encode($data));
+  $tile38->rawCommand('SET', 'xoxo', $shuttle,
+    'POINT', $data->geometry->coordinates[1], $data->geometry->coordinates[0]);
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, Config::$baseURL.'/streaming/pub?id=shuttle');

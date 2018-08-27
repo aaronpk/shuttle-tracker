@@ -4,13 +4,37 @@ date_default_timezone_set('UTC');
 include(dirname(__FILE__).'/geo.php');
 include(dirname(__FILE__).'/config.php');
 
-
 $redis = new Redis();
 $redis->pconnect('127.0.0.1', 6379);
 
+$tile38 = new Redis();
+$tile38->pconnect('127.0.0.1', 9851);
+// $tile38 = new Predis\Client('tcp://127.0.0.1:9851');
+
+
+
+
+function name_to_id($name) {
+  return strtolower(str_replace(' ', '_', $name));
+}
+
+function stop_from_id($id, $stops) {
+  foreach($stops as $stop) {
+    if($id == name_to_id($stop->properties->name))
+      return $stop;
+  }
+}
+
+function bridge_from_id($id, $bridges) {
+  foreach($bridges as $bridge) {
+    if($id == name_to_id($bridge->properties->name))
+      return $bridge;
+  }
+}
+
+
 
 class ErrorHandling {
-	
   public static function handle_error($errno, $errstr, $errfile, $errline) {
     if (!(error_reporting() & $errno)) {
       // this error code is not included in error_reporting
@@ -24,7 +48,7 @@ class ErrorHandling {
 			'line' => $errline
 		));
   }
-    
+
 	public static function handle_exception($exception, $call_previous = true) {
 		dieWithError(array(
 			'error' => $exception->getMessage()
@@ -38,11 +62,11 @@ if(!array_key_exists('SHELL',$_SERVER)) {
 }
 
 function dieWithError($err) {
-	die(json_encode($err));	
+	die(json_encode($err));
 }
 
 function respondWithError($err) {
-	die(json_encode($err));	
+	die(json_encode($err));
 }
 
 function getDistanceToStops($lat, $lng) {
@@ -80,5 +104,24 @@ function getDistanceToStops($lat, $lng) {
     ];
   }
   return $response;
+}
+
+
+function post_to_slack($msg) {
+  global $redis;
+
+  $payload = array(
+    'text' => $msg,
+    'username' => 'ShuttleBot',
+    'icon_url' => Config::$baseURL . '/assets/slack-icon.png'
+  );
+
+  $ch = curl_init(Config::$slackURL);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array('payload'=>json_encode($payload))));
+  $response = curl_exec($ch);
+  $redis->publish('xoxo-test', $response);
+
 }
 

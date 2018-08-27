@@ -58,12 +58,15 @@ foreach($shuttles as $shuttle) {
   ];
 }
 
-$stop = null;
+$stops = [];
 if($redis->get('xoxo-shuttle-current::rose')) {
-  $stop = json_decode($redis->get('xoxo-shuttle-current::rose'));
+  $stops[] = json_decode($redis->get('xoxo-shuttle-current::rose'));
+}
+if($redis->get('xoxo-shuttle-current::grey')) {
+  $stops[] = json_decode($redis->get('xoxo-shuttle-current::grey'));
 }
 
 echo json_encode([
   'shuttles' => $positions,
-  'stop' => $stop
+  'stops' => $stops
 ]);

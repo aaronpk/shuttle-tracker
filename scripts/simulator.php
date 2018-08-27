@@ -51,6 +51,7 @@ while(true) {
           $x = $last[0] + ($x_diff * $i);
           $y = $last[1] + ($y_diff * $i);
           $response = post_location([$x, $y], $shuttle, $o);
+          // echo $response."\n";
           usleep($delay*1000);
         }
       }

@@ -36,7 +36,7 @@ $redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use(
 
   foreach($stops as $stop) {
     if($stop->properties->Name == 'Yale Union') continue;
-    
+
     if(geo\gcDistance($stop->geometry->coordinates[1], $stop->geometry->coordinates[0],
       $data->geometry->coordinates[1], $data->geometry->coordinates[0]) <= 40) {
       // Shuttle is inside this stop right now
@@ -60,7 +60,7 @@ $redis->subscribe(['xoxo-tracker-'.$shuttle], function($r, $channel, $data) use(
         set_stop_state($redis2, $shuttle, $stop->properties->Name, 'outside');
     }
   }
-  
+
   foreach($bridges as $bridge) {
     if(geo\gcDistance($bridge['coordinates'][1], $bridge['coordinates'][0],
       $data->geometry->coordinates[1], $data->geometry->coordinates[0]) <= 200) {
@@ -105,18 +105,3 @@ function set_current_stop_status(&$r, $shuttle, $stop, $status) {
   return $r->set('xoxo-shuttle-current::'.$shuttle, json_encode($data));
 }
 
-function post_to_slack($msg) {
-  echo $msg . "\n";
-
-  $payload = array(
-    'text' => $msg,
-    'username' => 'ShuttleBot',
-    'icon_url' => Config::$baseURL . '/assets/slack-icon.png'
-  );
-  
-  $ch = curl_init(Config::$slackURL);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_POST, true);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array('payload'=>json_encode($payload))));
-  $response = curl_exec($ch);  
-}
