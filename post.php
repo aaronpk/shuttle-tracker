@@ -21,8 +21,15 @@ if(!is_array($input->locations)) {
 
 
 if(count($input->locations) > 0) {
-  $data = $input->locations[count($input->locations)-1];
-  $shuttle = $data->properties->shuttle;
+  if(property_exists($input, 'current')) {
+    $data = $input->current;
+    $data->properties->history_type = 'current';
+  } else {
+    $data = $input->locations[count($input->locations)-1];
+    $data->properties->history_type = 'historic';
+  }
+
+  $shuttle = $data->properties->device_id;
 
 	$redis->publish('xoxo-tracker-'.$shuttle, json_encode($data));
 	$redis->set('xoxo-tracker-location-'.$shuttle, json_encode($data));
