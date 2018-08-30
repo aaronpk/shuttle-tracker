@@ -62,10 +62,12 @@ if(!array_key_exists('SHELL',$_SERVER)) {
 }
 
 function dieWithError($err) {
+  header('HTTP/1.1 400 Bad Request');
 	die(json_encode($err));
 }
 
 function respondWithError($err) {
+  header('HTTP/1.1 400 Bad Request');
 	die(json_encode($err));
 }
 
