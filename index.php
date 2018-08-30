@@ -377,23 +377,34 @@
     autoPanMe = false;
   });
 
+  /*
+  Thu: 11 AM - 1 AM
+  Fri: 8 AM - 1 AM, 4 PM - 1 AM
+  Sat: 8 AM - 1 AM
+  Sun: 8 AM - 1 AM
+  */
+
   // Show a warning when viewing the map outside the schedule times
   var schedule = [
+    // Thursday
     {
-      from: (new Date(2018,8,6,18,0,0)),
-      to:   (new Date(2018,8,7,2,0,0))
+      from: (new Date(2018,8,6,11,0,0)),
+      to:   (new Date(2018,8,7,1,0,0))
     },
+    // Friday
     {
-      from: (new Date(2018,8,7,9,0,0)),
-      to:   (new Date(2018,8,8,2,0,0))
+      from: (new Date(2018,8,7,8,0,0)),
+      to:   (new Date(2018,8,8,1,0,0))
     },
+    // Saturday
     {
-      from: (new Date(2018,8,8,9,0,0)),
-      to:   (new Date(2018,8,9,2,0,0))
+      from: (new Date(2018,8,8,8,0,0)),
+      to:   (new Date(2018,8,9,1,0,0))
     },
+    // Sunday
     {
-      from: (new Date(2018,8,9,9,0,0)),
-      to:   (new Date(2018,8,10,2,0,0))
+      from: (new Date(2018,8,9,8,0,0)),
+      to:   (new Date(2018,8,10,1,0,0))
     }
   ];
   var active = false;

@@ -7,10 +7,10 @@
       "street": "N Winning Way",
       "icon": "xoxo",
       "schedule": {
-        "6": "Thu: 6pm - 2am",
-        "7": "Fri: 6pm - 2am",
-        "8": "Sat: 6pm - 2am",
-        "9": "Sun: 6pm - 2am"
+        "6": "Thu: 11am - 1am",
+        "7": "Fri: 8am - 1am",
+        "8": "Sat: 8am - 1am",
+        "9": "Sun: 8am - 1am"
       }
     },
     "geometry": {
@@ -29,10 +29,10 @@
       "street": "NW 9th & Glisan",
       "icon": "canopy",
       "schedule": {
-        "6": "Thu: 6pm - 2am",
-        "7": "Fri: 6pm - 2am",
-        "8": "Sat: 6pm - 2am",
-        "9": "Sun: 6pm - 2am"
+        "6": "Thu: 11am - 1am",
+        "7": "Fri: 8am - 1am",
+        "8": "Sat: 8am - 1am",
+        "9": "Sun: 8am - 1am"
       }
     },
     "geometry": {
@@ -51,10 +51,10 @@
       "street": "SW Stark & 10th",
       "icon": "acehotel",
       "schedule": {
-        "6": "Thu: 6pm - 2am",
-        "7": "Fri: 6pm - 2am",
-        "8": "Sat: 6pm - 2am",
-        "9": "Sun: 6pm - 2am"
+        "6": "Thu: 11am - 1am",
+        "7": "Fri: 8am - 1am",
+        "8": "Sat: 8am - 1am",
+        "9": "Sun: 8am - 1am"
       }
     },
     "geometry": {
@@ -70,13 +70,13 @@
     "properties": {
       "name": "Pioneer Square",
       "address": "701 SW Broadway St, Portland, OR 97205",
-      "street": "SW Broadway & Morrison",
+      "street": "(Pickup for Dossier, Duniway and Marriott)<br>SW Broadway & Morrison",
       "icon": "pioneersquare",
       "schedule": {
-        "6": "Thu: 6pm - 2am",
-        "7": "Fri: 6pm - 2am",
-        "8": "Sat: 6pm - 2am",
-        "9": "Sun: 6pm - 2am"
+        "6": "Thu: 11am - 1am",
+        "7": "Fri: 8am - 1am",
+        "8": "Sat: 8am - 1am",
+        "9": "Sun: 8am - 1am"
       }
     },
     "geometry": {
@@ -95,10 +95,10 @@
       "street": "SW Taylor & 3rd",
       "icon": "achotels",
       "schedule": {
-        "6": "Thu: 6pm - 2am",
-        "7": "Fri: 6pm - 2am",
-        "8": "Sat: 6pm - 2am",
-        "9": "Sun: 6pm - 2am"
+        "6": "Thu: 11am - 1am",
+        "7": "Fri: 8am - 1am",
+        "8": "Sat: 8am - 1am",
+        "9": "Sun: 8am - 1am"
       }
     },
     "geometry": {
@@ -117,10 +117,10 @@
       "street": "SW Pine & 3rd",
       "icon": "embassy",
       "schedule": {
-        "6": "Thu: 6pm - 2am",
-        "7": "Fri: 6pm - 2am",
-        "8": "Sat: 6pm - 2am",
-        "9": "Sun: 6pm - 2am"
+        "6": "Thu: 11am - 1am",
+        "7": "Fri: 8am - 1am",
+        "8": "Sat: 8am - 1am",
+        "9": "Sun: 8am - 1am"
       }
     },
     "geometry": {
@@ -139,10 +139,10 @@
       "street": "NW 3rd & Davis",
       "icon": "society",
       "schedule": {
-        "6": "Thu: 6pm - 2am",
-        "7": "Fri: 6pm - 2am",
-        "8": "Sat: 6pm - 2am",
-        "9": "Sun: 6pm - 2am"
+        "6": "Thu: 11am - 1am",
+        "7": "Fri: 8am - 1am",
+        "8": "Sat: 8am - 1am",
+        "9": "Sun: 8am - 1am"
       }
     },
     "geometry": {
