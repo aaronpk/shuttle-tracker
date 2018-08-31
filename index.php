@@ -427,7 +427,7 @@
     get_request('location.php', function(location) {
       for(var i=0; i<location.shuttles.length; i++) {
         data = location.shuttles[i];
-        console.log(data);
+        // console.log(data);
 
         if(data.current) {
           bus[data.current.properties.shuttle] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
@@ -461,12 +461,16 @@
     });
     pushstream.onmessage = function(data,id,channel) {
       if(channel == 'shuttle') {
-        routeHistoryLine[data.properties.shuttle].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
-        bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
-        bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date));
+        if(routeHistoryLine[data.properties.shuttle]) {
+          routeHistoryLine[data.properties.shuttle].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
+        }
+        if(bus[data.properties.shuttle]) {
+          bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+          bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date));
 
-        if(autoPanBus && !map.getBounds().contains(bus[data.properties.shuttle].getLatLng())) {
-          map.panTo(bus[data.properties.shuttle].getLatLng());
+          if(autoPanBus && !map.getBounds().contains(bus[data.properties.shuttle].getLatLng())) {
+            map.panTo(bus[data.properties.shuttle].getLatLng());
+          }
         }
       } else if(channel == 'stop') {
         setShuttleCurrentStop(data);

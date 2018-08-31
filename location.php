@@ -5,7 +5,14 @@ header('Content-type: application/json');
 
 $shuttles = ['rose','grey'];
 
+// Only one shuttle Friday morning 8am-4pm
+if(time() >= strtotime('2018-09-07T08:00:00-0700') && time() <= strtotime('2018-09-07T16:00:00-0700'))
+  $shuttles = ['grey'];
+
+$shuttles = ['grey'];
+
 $positions = [];
+$stops = [];
 
 foreach($shuttles as $shuttle) {
 
@@ -56,15 +63,12 @@ foreach($shuttles as $shuttle) {
     'current' => json_decode($current),
     'history' => $history
   ];
+
+  if($redis->get('xoxo-shuttle-current::'.$shuttle)) {
+    $stops[] = json_decode($redis->get('xoxo-shuttle-current::'.$shuttle));
+  }
 }
 
-$stops = [];
-if($redis->get('xoxo-shuttle-current::rose')) {
-  $stops[] = json_decode($redis->get('xoxo-shuttle-current::rose'));
-}
-if($redis->get('xoxo-shuttle-current::grey')) {
-  $stops[] = json_decode($redis->get('xoxo-shuttle-current::grey'));
-}
 
 echo json_encode([
   'shuttles' => $positions,
