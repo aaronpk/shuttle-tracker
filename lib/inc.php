@@ -123,7 +123,21 @@ function post_to_slack($msg) {
   curl_setopt($ch, CURLOPT_POST, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array('payload'=>json_encode($payload))));
   $response = curl_exec($ch);
-  $redis->publish('xoxo-test', $response);
+
+
+  if(Config::$micropubEndpoint) {
+    $ch = curl_init(Config::$micropubEndpoint);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+      'h' => 'entry',
+      'content' => $msg,
+    ]));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+      'Authorization: Bearer ' . Config::$micropubToken
+    ]);
+    $response = curl_exec($ch);
+  }
 
 }
 
