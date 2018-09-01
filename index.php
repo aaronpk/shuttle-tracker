@@ -21,7 +21,7 @@
   <script type="text/javascript" src="/assets/tracker-dist.js"></script>
   -->
 
-  <link rel="apple-touch-icon" href="/assets/xoxo-shuttle-icon.png">
+  <link rel="apple-touch-icon" href="/images/xoxo-shuttle-icon.png">
   <link rel="stylesheet" href="https://use.typekit.net/tnr5bfv.css">
 
   <!-- <link href="/assets/style.css" rel="stylesheet" type="text/css"/> -->
