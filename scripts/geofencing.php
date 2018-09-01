@@ -2,6 +2,8 @@
 chdir(dirname(__FILE__).'/..');
 include('lib/inc.php');
 
+die('Using Tile38 instead now');
+
 echo "Starting...\n";
 
 $stops = json_decode(file_get_contents('stops.geojson'));

@@ -9,7 +9,7 @@ foreach($stops as $stop) {
 
   $name = strtolower(str_replace(' ', '_', $stop->properties->name));
   echo "Registering geofence $name\n";
-  $result = $tile38->rawCommand('SETHOOK', 'stop-'.$name, 'https://xoxo.io.dev/hook.php',
+  $result = $tile38->rawCommand('SETHOOK', 'stop-'.$name, Config::$baseURL.'/hook.php',
     'NEARBY', 'xoxo',
     'FENCE', 'DETECT', 'enter,exit,cross',
     'POINT', $stop->geometry->coordinates[1], $stop->geometry->coordinates[0], 100
@@ -24,7 +24,7 @@ foreach($bridges as $bridge) {
 
   echo "Registering geofence $name\n";
   echo json_encode($bridge->geometry, JSON_UNESCAPED_SLASHES)."\n";
-  $result = $tile38->rawCommand('SETHOOK', 'bridge-'.$name, 'https://xoxo.io.dev/hook.php',
+  $result = $tile38->rawCommand('SETHOOK', 'bridge-'.$name, Config::$baseURL.'/hook.php',
     'INTERSECTS', 'xoxo',
     'FENCE', 'DETECT', 'enter,exit,cross',
     'OBJECT', "'".json_encode($bridge->geometry, JSON_UNESCAPED_SLASHES)."'");
