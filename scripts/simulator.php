@@ -80,7 +80,7 @@ function post_location($loc, $shuttle, $offset) {
           'coordinates' => $loc,
         ],
         'properties' => [
-          'shuttle' => $shuttle,
+          'device_id' => $shuttle,
           'accuracy' => 10,
           'timestamp' => time(),
           'horizontal_accuracy' => 5,
@@ -91,6 +91,7 @@ function post_location($loc, $shuttle, $offset) {
       ]
     ]
   ]));
-  return curl_exec($ch);
+  $response = curl_exec($ch);
+  return $response;
 }
 
