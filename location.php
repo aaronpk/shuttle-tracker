@@ -22,7 +22,7 @@ foreach($shuttles as $shuttle) {
   $coordinates = [];
   foreach($loc as $l) {
     $p = json_decode($l, true);
-    if(isset($p['properties']['accuracy']) && $p['properties']['accuracy'] <= 100)
+    if(isset($p['properties']['horizontal_accuracy']) && $p['properties']['horizontal_accuracy'] <= 100)
       $coordinates[] = $p['geometry']['coordinates'];
   }
 
