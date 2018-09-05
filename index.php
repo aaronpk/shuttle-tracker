@@ -227,18 +227,22 @@
       <? $stops = json_decode(file_get_contents('stop-order.json'), true); ?>
       <?
         $now = new DateTime();
-        $now = new DateTime('2018-09-06T19:00:00-0700');
+        //$now = new DateTime('2018-09-07T16:00:00-0700');
+
         $now->setTimeZone(new DateTimeZone('US/Pacific'));
-        if($now->format('H') <= 3)
-          $today = $now->sub(new DateInterval('PT6H'));
-        $today = $now->format('j');
-        if($now->format('H') >= 18)
+
+        if($now->format('H') >= 18 || $now->format('H') <= 4)
           $index = 1;
         else
           $index = 0;
+
+        if($now->format('H') <= 3)
+          $today = $now->sub(new DateInterval('PT6H'));
+        $today = $now->format('j');
+
         if(array_key_exists($today, $stops) && array_key_exists($index, $stops[$today]) && count($stops[$today][$index])):
           ?>
-          <h3><?= $now->format('M j') ?> <?= $index == 0 ? 'Morning' : 'Night' ?> Schedule</h3>
+          <h3><?= $now->format('M j') ?> Schedule</h3>
           <ul>
             <? foreach($stops[$today][$index] as $stop): ?>
               <li id="stop-<?= md5($stop) ?>">
@@ -293,6 +297,11 @@
 
   var map = L.map('map');
 
+  L.control.attribution({
+    position: "bottomleft",
+    prefix: "Shuttle tracker by <a href=\"https://aaronparecki.com\">aaronpk</a>"
+  }).addTo(map);
+
   var bus = [];
   var routeHistoryLine = [];
   var me = null;
@@ -325,7 +334,7 @@
   });
 
   var today = new Date();
-  today = new Date(2018,8,6,19,0,0);
+  //today = new Date(2018,8,6,11,0,0);
 
   var uniqid = today.toISOString()+today.getMilliseconds();
 
