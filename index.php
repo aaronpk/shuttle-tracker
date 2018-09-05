@@ -430,11 +430,11 @@
         // console.log(data);
 
         if(data.current) {
-          bus[data.current.properties.shuttle] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
+          bus[data.current.properties.device_id] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
             icon: busIcon
           }).addTo(map);
-          bus[data.current.properties.shuttle].bindPopup(bus_popup(data.current.properties.date, data.current.properties.shuttle));
-          routeHistoryLine[data.current.properties.shuttle] = L.polyline(data.history, {
+          bus[data.current.properties.device_id].bindPopup(bus_popup(data.current.properties.date, data.current.properties.device_id));
+          routeHistoryLine[data.current.properties.device_id] = L.polyline(data.history, {
             "color": "#6A0A1C",
             "weight": 5,
             "opacity": 0.65
@@ -461,15 +461,15 @@
     });
     pushstream.onmessage = function(data,id,channel) {
       if(channel == 'shuttle') {
-        if(routeHistoryLine[data.properties.shuttle]) {
-          routeHistoryLine[data.properties.shuttle].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
+        if(routeHistoryLine[data.properties.device_id]) {
+          routeHistoryLine[data.properties.device_id].addLatLng([data.geometry.coordinates[1],data.geometry.coordinates[0]]);
         }
-        if(bus[data.properties.shuttle]) {
-          bus[data.properties.shuttle].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
-          bus[data.properties.shuttle].bindPopup(bus_popup(data.properties.date, data.properties.shuttle));
+        if(bus[data.properties.device_id]) {
+          bus[data.properties.device_id].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
+          bus[data.properties.device_id].bindPopup(bus_popup(data.properties.date, data.properties.device_id));
 
-          if(autoPanBus && !map.getBounds().contains(bus[data.properties.shuttle].getLatLng())) {
-            map.panTo(bus[data.properties.shuttle].getLatLng());
+          if(autoPanBus && !map.getBounds().contains(bus[data.properties.device_id].getLatLng())) {
+            map.panTo(bus[data.properties.device_id].getLatLng());
           }
         }
       } else if(channel == 'stop') {
