@@ -9,8 +9,6 @@ $shuttles = ['rose','grey'];
 if(time() >= strtotime('2018-09-07T08:00:00-0700') && time() <= strtotime('2018-09-07T16:00:00-0700'))
   $shuttles = ['grey'];
 
-$shuttles = ['grey'];
-
 $positions = [];
 $stops = [];
 
