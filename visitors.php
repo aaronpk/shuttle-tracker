@@ -127,7 +127,7 @@
   });
 
   var visitorIcon = L.icon({
-    iconUrl: '/images/red-dot.png',
+    iconUrl: '/images/red-dot@2x.png',
     iconRetinaUrl: '/images/red-dot@2x.png',
     iconSize: [6, 6],
     iconAnchor: [3, 3],
@@ -155,7 +155,7 @@
 
   map.fitBounds(bounds);
 
-  setTimeout(start_watching, 500);
+  // setTimeout(start_watching, 500);
 
   var visitorGroup = null;
   get_request('visitor-data.php', function(data) {
