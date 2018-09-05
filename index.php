@@ -427,13 +427,13 @@
     get_request('location.php', function(location) {
       for(var i=0; i<location.shuttles.length; i++) {
         data = location.shuttles[i];
-        // console.log(data);
+        console.log(data);
 
         if(data.current) {
           bus[data.current.properties.device_id] = L.marker([data.current.geometry.coordinates[1], data.current.geometry.coordinates[0]], {
             icon: busIcon
           }).addTo(map);
-          bus[data.current.properties.device_id].bindPopup(bus_popup(data.current.properties.date, data.current.properties.device_id));
+          bus[data.current.properties.device_id].bindPopup(bus_popup(data.current.properties.timestamp, data.current.properties.device_id));
           routeHistoryLine[data.current.properties.device_id] = L.polyline(data.history, {
             "color": "#6A0A1C",
             "weight": 5,
@@ -466,7 +466,7 @@
         }
         if(bus[data.properties.device_id]) {
           bus[data.properties.device_id].setLatLng([data.geometry.coordinates[1], data.geometry.coordinates[0]]);
-          bus[data.properties.device_id].bindPopup(bus_popup(data.properties.date, data.properties.device_id));
+          bus[data.properties.device_id].bindPopup(bus_popup(data.properties.timestamp, data.properties.device_id));
 
           if(autoPanBus && !map.getBounds().contains(bus[data.properties.device_id].getLatLng())) {
             map.panTo(bus[data.properties.device_id].getLatLng());
